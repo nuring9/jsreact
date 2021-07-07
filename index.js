@@ -1,13 +1,16 @@
 
 //**태그 선택하기**/
 
-//1. id로 태그 선택하기
+//1. document.getElementById('id')	/  HTML id속성으로 태그 선택하기 /	id에 해당하는 태그 하나
 const myTag = document.getElementById('btns');
 console.log(myTag);
 // 딱 그 태그만 보여주는게 아니라 해당태그 내부에 있는 모든 내용들이 표시
+// <div id="btns"><div>...</div></div>
 //없는 id를 불러오면 null값이 리턴
 
-//2. class로 태그 선택하기 // 배열은 아니지만 유사배열 //요소의 순서는 위에서 차례대로
+
+//2. document.getElementsByClassName('class') / HTML class속성으로 태그 선택하기 /	class에 해당하는 태그 모음(HTMLCollection) 
+// 배열은 아니지만 유사배열 //요소의 순서는 위에서 차례대로
 const mytags = doucument.getElementsByClassName('color-btn');
 
 console.log(myTags);
@@ -25,17 +28,22 @@ getElementsByClassName // HTMLCollection로(유사배열)
 
 
 
-//3. 태그 이름으로 태그를 선택, HTML 문서 내에 있는 모든 button 태그를 선택
+//3. document.getElementsByTagName('tag')	/ HTML 태그 이름으로 태그 선택하기 /	tag에 해당하는 태그 모음(HTMLCollection)
 const btns = document.getElementsByTagName('button');
 
 
-//4. css 선택자로 태그 선택하기
+
+
+//4. document.querySelector('css')	/ css 선택자로 태그 선택하기 /	css 선택자에 해당하는 태그 중 가장 첫번째 태그 하나
 const myTag = document.querySelector('#myNunber');
 console.log(myTag);
 const myTag2 = ducument.getElementById('myNunber');
 console.log(myTag2);
 //querySelector 와 getElementById 는 같은 개념
 //<div id ="myNunmber">0</div> 출력됨
+//querySelector는 tag,class,id 다 받고 getElementById는 id만 받는다.
+
+
 
 
 const myTag = document.querySelector('.color-btn');
@@ -44,10 +52,13 @@ console.log(myTag);
 // 첫번째 선택됨
 //없는 요소를 선택할 경우 null
 
+//5. document.querySelectorAll('css')	css / 선택자로 태그 선택하기	/ css 선택자에 해당하는 태그 모음(NodeList)
 const myTags = documnet.querySelectorAll('.color-btn');
 console.log(myTags);
 //NodeList 라는 유사배열이(color-btn을 css선택자를 가지고있는) 출력됨
 //없는 요소를 선택할 경우 Nodeslist가 리턴
+
+
 
 const myTag2 = documnet.getElementsByClassName('.color-btn');
 console.log(myTag2);
@@ -248,10 +259,12 @@ console.log(today.classList);
 const item = tomorrow.childern[1]; //1번 인덱스에
 item.classList.add('done' ,'두번째클래스'); //done 클래스가 추가 여러 클래스를 넣고싶을때는 ,쉼표로 구분
 //remove 삭제
-item.classList.add('done'); 
+item.classList.remove('done'); //done은 속성의값
 //toggle 있으면 제거 , 없으면 추가 하는 메소드 (자주 사용하지 않음)
-today.classList.toggle('done');
+today.classList.toggle('done'); //done은 속성의값
 //두번째 파라미터(쉼표 뒤) true로 입력할 경우 add 기능만 하고, false 입력할 경우 remove의 기능만 하다록 강제 역할
+today.classList.contains('속성의값');
+//	값이 존재하는지 체크한다.(true / false)
 
 
 
@@ -276,6 +289,7 @@ today.classList.toggle('done');
 
 
 // 비표준 속성 활용하기
+// 자바스크립트로 HTML 태그의 비표준 속성을 활용할 때 HTML 태그에 data-*형태로 속성을 작성하고 자바스크립트로는 DOM의 dataset프로퍼티를 활용하면 조금 더 안전하게 비표준 속성을 다룰 수 있음
 // 1. querySelector로 태그를 선택할 때 css 선택자를 활용해서 태그를 선택하는 데에 활용
 const filelds = documnet.querySelectorAll('[field]');
 console.log(fields); //fieid라는 비표준 속성으로 b태그를 선택
@@ -417,4 +431,280 @@ btn.addEventListener('click', event2); //btn 클릭 했을때 event2 출력
 btn.removeEventListener('click', event2); 
 // 삭제시 꼭 외부에 함수를 만들어서 해당 함수의 이름으로 핸들러를 전달 해줘야 함 
 // 즉, 등록과 동일하게 등록된 핸들러를 삭제 할 수 있음.
+
+
+
+
+// 이벤트와 이벤트 핸들링, 그리고 이벤트 핸들러
+// 이벤트 : 웹 페이지에서 발생하는 대부분의 일(사건)들
+//   ex) 버튼 클릭, 스크롤, 키보드 입력, ...
+
+// 이벤트 핸들링 : 자바스크립트를 통해 이벤트를 다루는 일
+// 이벤트 핸들러 : 이벤트가 발생했을 때 일어나야하는 구체적인 동작들을 표현한 코드. 이벤트 리스너(Event Listener)라고도 부른다.
+
+
+/**이벤트 등록하는 방법**/
+const toDoList = document.querySelector('#to-do-list');
+const items = toDoList.children;
+// 1.css 선택자(#to-do-list)로 태그 선택하기
+// 2.변수에 선택된 태그 담기
+
+function updateToDo(event) {
+event.target.classList.toggle('done');
+}
+// 3. 이벤트 핸들러 선언(이벤트를 다루는) 핸들링
+
+for (let item of items) {
+  item.addEventListener('click', updateToDo)
+}
+// 4.반복문을 활용해서 각 li태그에 이벤트 핸들러를(clikc) 등록
+
+event.target	이벤트가 발생한 요소
+event.currentTarget	이벤트 핸들러가 등록된 요소
+
+
+/**이벤트 버블링**/
+// 어떤 하나의 요소에 이벤트가 발생하게 되면 이 요소가 할당된 이벤트 핸들러가 동작하고 거기서 끝이아니라, 이어서 같은 타입의 이벤트에 한해서
+// 부모 요소의 핸들러도 동작하게 되는 것, 가장 최상단의 윈도우 객체를 만날 때까지 이 과정이 반복되면서 요소에 각각 할당된 모든 이벤트 핸들러가 동작하는 원리. 자식 요소부터 부모 요소를 거슬러 올라가면서 발생하는 이벤트
+<h1 id="title">오늘 할 일</h1>
+<ol id="list">
+  list
+  <li class="item">자바스크립트 공부</li>
+  <li class="item">유튜브 시청</li>
+  <li class="item">저녁 약속</li>
+  <li class="item">독서</li>
+  <li class="item">일기</li>
+</ol>
+
+const list = document.querySelector('#list');
+const items = document.querySelectorAll('.item');
+
+for (let item of items) {
+  item.addEventListener('click', function(e) { //클릭 이벤트 등록 이벤트 핸들링
+    console.log('item Event'); //클릭 했을 때 item Event 가 출력 하는 핸들로
+    console.log(e.target); // 1. target은 이벤트가 발생한 요소 출력 = 부모 요소의 핸들러들이 최초의 이벤트가 발생한 위치 파악
+  // item Event
+  //   <li class="item">자바스크립트 공부</li>
+  // list Evet
+  //    <li class="item">자바스크립트 공부</li>  //버블링
+    console.log(e.currentTarget); // 2. 이벤트 핸들러가 등록된 요소 = 실제로 이벤트 핸들러가 동작하는 요소 출력
+	// item Event
+  //   <li class="item">자바스크립트 공부</li>
+  // list Evet
+  //    <ol id="list">...</ol>  //버블링
+    e.stopPropagation(); // 이벤트 버블링 막기, 권장하지 않음
+  });
+}
+
+//***캡처링(captyring) (버블링과 반대로 내려가는 ) 실제로로 자주쓰이지 않음.
+// 캡처링 단계: 이벤트가 하위 요소로 전파되는 단계
+// 타깃 단계: 이벤트가 실제 타깃 요소에 전달되는 단계
+// 버블링 단계: 이벤트가 상위 요소로 전파되는 단계
+<body>
+  <div>DIV
+    <ul>UL
+      <li>LI</li>
+    </div>
+  </form>
+  
+  <script>
+    for (let elem of document.querySelectorAll('*')) {
+      elem.addEventListener("click", e => alert(`캡쳐링 단계: ${elem.tagName}`), true);
+      elem.addEventListener("click", e => alert(`버블링 단계: ${elem.tagName}`));
+    }
+  </script>
+ </body>
+ // 캡쳐링 단계에서 이벤트 핸들러를 동작시키려면, addEventListener에 세번째 프로퍼티에 true 또는 { capture:true }를 전달하면 됩니다.
+
+//  이벤트 객체의 target 프로퍼티와 classList 프로퍼티의 contains 메소드를 활용
+
+//**이벤트 위임**//
+(버블링)처음에는 없다가 새로운 아이템을 추가하는 상황이 발생하게 되면 이벤트 핸들러가 동작하지 않는다.
+매번 추가할 때 마다 이벤트 핸들러를 새로 등록해야 할 때 해결 할 수 있는 이벤트 위임
+부모 요소가 자식 요소에서 발생한 이벤트를 감지할 수 있고 이벤트 객체에 target프로퍼티가 항상 이벤트 발생 위치를 담고 있기때문에 
+부모 요소인 리스트에 이벤트 핸들러를 하나만 등록해줘도 모든 자식 요소의 이벤트를 다룰 수 있다.[Event Delegation]
+자식 요소의 이벤트를 부모 요소에 위임 했다고 이해하면 됨
+
+const list = document.querySelector('#list');
+
+list.addEventListener('click', function(e) {  //부모요소에 직접 이벤트등록
+	// if (e.target.tagName === 'LI') 대체 가능
+	if (e.target.classList.contains('item')) { //item 속성이 포함 되어있는 요소 중에
+		e.target.classList.toggle('done'); //true면 done을 실행
+	}
+});
+
+//위임 전 비교 자식요소에 등록 했을 경우
+for (let item of list.childre) { //list의 자식요소에 등록하여 반복
+  item.addEventListener('click', function(e) {
+    e.target.classList.toggle('done');
+  })
+}
+
+
+
+//**브라우저의 기본동작**//
+//예를 들어 마우스 오른쪽 버튼을 클릭하면 상황에 맞는 메뉴 창이 뜬다거나, input 태그에 커서를 두고 키보드 키를 누르면 해당 값이 입력된다거나..
+// preventDefault 메소드를 통해 막을 수가 있습니다만, 역활과 의미를 훼손하기 때문에 꼭 필요한 경우에만 주의해서 사용
+
+const link = document.querySelector('#link');
+const checkbox = document.querySelector('#checkbox');
+const input = document.querySelector('#input');
+const text = document.querySelector('#text');
+
+link.addEventListener('click', function(e) { //클릭을 했을 경우
+	e.preventDefault(); //preventDefault 메소드로 막음
+	alert('지금은 이동할 수 없습니다.'); // 경고창이 뜸
+});
+
+input.addEventListener('keydown', function(e) { //키다운
+	if (!checkbox.checked) {
+		e.preventDefault();
+		alert('체크박스를 먼저 체크해 주세요.');  // 경고창이 뜸
+	}
+});
+
+document.addEventListener('contextmenu', function(e) { //오른쪽 클릭
+	e.preventDefault();
+	alert('마우스 오른쪽 클릭은 사용할 수 없습니다.'); // 경고창이 뜸
+});
+
+
+
+//**마우스 버튼 이벤트**//
+//마우스 버튼을 눌렀을 때 일어난 이벤트에 대해서 어떤 버튼을 눌러서 일어난 이벹느인지 알아낼 수 있음.
+1. MouseEvent.button
+0 = mouse 왼쪽 버튼
+1 = mouse 휠
+2 = mouse 오른쪽 버튼
+3 = x1(일반적으로 브라우저 뒤로 가기 버튼)
+4 = X2(일반적으로 브라우저 앞으로 가기 버튼)
+//mouseenter, mouseleave, mouseover, mouseout, mousemove 처럼 마우스 이동과 관련된 이벤트에서는 이 이값이 null이나 undefined가 아니라 0임.
+// 왼쪽 버튼을 클릭했을 경우 마우스를 눌렀따가 뗀 동작이기 때문에 mousedown,mouseup,click 까지 총 3개의 이벤트가 발생
+
+2.MouseEvent.prototype (type)
+mousedown = 마우스 버튼을 누르는 순간
+mouseup - 마우스 버튼을 눌렀따 떼는 순간
+cilck = 왼쪽 버튼을 클릭한 순간
+dblclick = 왼쪽 버튼을 빠르게 두번 클릭한 순간 //클릭 이벤트가 두번 발생하고 나서 더블클릭 이벤트가 발생
+contextmenu = 오른쪽 버튼을 클릭한 순간
+mousemove = 마우스를 움직이는 순간
+mouseover = 마우스 포인터가 요서 위로 올라온 순간
+mouseout = 마우스 포인터가 요소에서 벗어나는 순간
+mouseenter = 마우스 포인터가 요소 위로 올라온 순간(버블링이 일어나지 않음)
+mouseleave = 마우스 포인터가 요소에서 벗어나는 순간(버블링이 일어나지 않음)
+
+
+const box2 = document.querySelector('#box2');
+
+function printEventData(e) {
+  console.log('event:', e.type);
+  console.log('target:', e.target);
+  console.log('relatedTarget:', e.relatedTarget);
+  console.log('------------------------------------');
+  if (e.target.classList.contains('cell')) {
+    e.target.classList.toggle('on');  //toggle 메소드를 활용하면 mouseover에서 클래스가 추가되고 mouseout에서 클랙스가 삭제 되는 방식
+  } // 자식 요소의 클래스를 toggle을 할때 mouseover와 mouseout로 이벤트 위임을 활용
+}
+
+box2.addEventListener('mouseover', printEventData);
+box2.addEventListener('mouseout', printEventData);
+
+
+
+
+3.MouseEvent.위치프로퍼티
+clientX, clientY = 마우스 포인터의 브라우즈 표시 영역에서의 위치  //항상 대상의 좌측 상단의 모서리 위치를 (0, 0)으로 계산
+pageX, pageY = 마우스 커서의 문서 영역에서의 위치  //client 값과 혼동하기 쉬우니 잘 구분
+OffsetX, offsetY = 마우스 포인터의 이벤트 발생한 요소에서의 위치  //항상 대상의 좌측 상단의 모서리 위치를 (0, 0)으로 계산
+screenX, screenY = 마우스 포인터의 모니터 화면 영역에서의 위치
+
+
+const box1 = document.querySelector('#box1');
+
+function onMouseMove(e) {
+  console.log(`client: (${e.clientX}, ${e.clientY})`); //화면에 표시되는 창을 기준
+  console.log(`page: (${e.pageX}, ${e.pageY})`);  //문서 전체
+  console.log(`offset: (${e.offsetX}, ${e.offsetY})`);
+  console.log('------------------------------------');
+}
+
+box1.addEventListener('mousemove', onMouseMove);
+
+
+
+
+
+4.MouseEvent.relatedTarget
+mouseenter, mouseleave, mouseover, mouseout 이벤트에는 relatedTarget이라는 프로퍼티가 존재
+target 프로퍼티가 이벤트가 발생한 요소를 담고 있다면, relatedTarget 프로퍼티는 이벤트가 발생하기 직전(또는 직후)에 마우스가 위치해 있던 요소를 담고 있음. 비슷하지만 서로 다른 두 프로퍼티를 잘 구분해서 기억.
+마우스 이동 경로를 파악할 때도 유용하게 활용 (mouseover일때 target이 box2이고 relatedTarget이 cell-4이니까 cell-4에서 box2로 마우스가 이동했다는 걸 파악)
+
+
+-------------------청기백기 실습 예시--------------------
+
+const flagBlue = document.querySelector('.flag-blue');
+const flagWhite = document.querySelector('.flag-white');
+
+function reset() {
+  document.querySelector('.up').classList.remove('up');
+}
+
+// 1. flagUp 함수
+function flagUp(e) {
+
+if (e.button === 0) { //마우스 이벤트가 마우스 왼쪽 버튼을 눌러서 발생
+  flagBlue.classList.add('up'); // flagBlue 에 up이라는 클래스 속성 추가
+} else if (e.button === 2) { //마우스 오른쪽 버튼을 눌러서 발생
+  flagWhite.classList.add('up'); // flagWhite 에 up이라는 클래스 속성 추가
+}
+
+  // 500 밀리초 뒤에 reset함수를 실행
+  setTimeout(reset, 500);
+}
+
+// 2. 마우스 오른쪽 버튼 클릭시 나타나는 브라우저 기본동작 막기
+document.addEventListener('contextmenu', function (e) {
+e.preventDefault(); // 이벤트 객체의  preventDefault 메소드를 사용하여 막기
+});
+
+document.addEventListener('mousedown', flagUp); //  flagUp 함수는 document 객체의 mousedown 타입의 이벤트 핸들러로 등록
+-------------------------------------------------------------------
+
+
+
+
+//**KeyboardEvent.type 키보드**//
+1.이벤트 타입
+keydown = 키보드의 버튼을 누르는 순간
+keypress = 키보드의 버튼을 누르는 순간 ('a', '5'등 출력이 가능한 키에서만 동작하며, Shift,Esc 등의 키에는 반은하지 않음)
+keyup = 키보드의 버튼을 눌렀따 떼는 순간
+
+2.KeyboardEvent.key vs KeyboardEvent.code
+키보드 이벤트 객체에는 key 와 code 프로퍼티가 자주 사용
+key는 사용자가 누른 키가 가지고 있는 값을 나타냄
+code는 누른 키의 물리적인 위치를 나타냄
+
+
+
+//**input태그 다루기**//
+input 태그는 말 그대로 입력의 역할
+1.이벤트 타입
+focusin = 요소에 포커스가 되는 순간
+focusout = 요소에 포커스가 빠져나가는 순간
+focus = 요소에 포커스가 되는 순간 (버블링이 일어나지 않음)
+blur = 요소에 포커스가 빠져나가는 순간 (버블링이 일어나지 않음)
+change = 입력된 값이 바뀌는 순간
+input = 값이 입력되는 순간
+select = 입력 양식의 하나가 선택되는 순간(체크박스나 토글)
+submit = 폼을 전송하는 순간
+
+
+
+
+
+//**스크롤 이벤트**//
+scroll 이벤트는 보통 window 객체에 이벤트 핸들러를 등록하고 window 객체의 프로퍼티와 함께 자주 활용
+특히 scrollY 프로퍼티를 활용하면 스크롤된 특정한 위치를 기준으로 이벤트 핸들러가 동작하게 하거나
+혹은 스크롤 방향 (위로 스크롤 중인지 / 아래로 스크롤 중인지)을 기준으로 이벤트 핸들러가 동작하게끔 활용할 수 있음.
 
