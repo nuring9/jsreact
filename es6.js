@@ -267,7 +267,7 @@ printRank('Phil', 'Won', 'Emma', 'Min', 'Luke');
 
 
 
-@@@@@  Arrow Function @@@@@ 2015년 이후
+@@@@@  Arrow Function @@@@@ 2015년 이후 에로우
 기존 함수를 간결하게 변경, 익명 함수, 아규먼트객체를 사용할 수 없음
 
 ============= 일반 함수선언 문
@@ -486,6 +486,7 @@ console.log(codeit);
 @@@@@ 옵셔널 체이닝??? @@@@@ 
 
 
+
 @@@@@ Destructuring (구조 분해) @@@@@ 배열(Array) 적용  [] 사용
 const rank = ['유나', '효준', '민환', '재하'];
 
@@ -555,7 +556,7 @@ console.log(product);      / console.log(title);의 title 변경
 
 
 
-@@@@@ 함수와 Destructuring @@@@@ 
+@@@@@ 함수와 Destructuring @@@@@ 구조분해
 ===============================================
 function  printWinners(...arg) {
   const [macbook, ipad, airpods, ...coupon] = arg;
@@ -613,7 +614,7 @@ const macbook = {
   memory: '16GB',
   storage: '1TB SSD 저장 장치',
   display: '16형 Retina 디스플레이',
-};
+};   /변동없음
 
 function  printSummary(object) {
   console.log(`선택한 상품은 '${object.title}'입니다.`);
@@ -626,7 +627,7 @@ printSummary(macbook);
 ================================= Destructuring 사용법
 
 function  printSummary(object) {
-  const { title, colr, price } = object;
+  const { title, color, price } = object;
   console.log(`선택한 상품은 '${object.title}'입니다.`);
   console.log(`색상은 ${object.color}이며,`);
   console.log(`가격은 ${object.price}원 입니다.`);
@@ -635,7 +636,7 @@ function  printSummary(object) {
 printSummary(macbook);
 ================================= 함수내에서 정해진 파라미터만 사용할 경우 더 단축할 수 있음.
 
-function  printSummary({ title, colr, price }) {
+function  printSummary({ title, color, price }) {
   console.log(`선택한 상품은 '${object.title}'입니다.`);
   console.log(`색상은 ${object.color}이며,`);
   console.log(`가격은 ${object.price}원 입니다.`);
@@ -657,7 +658,7 @@ btn.addEventListener('click', ({ target }) => {
 });  / 구조 분해로 변경 target 프로퍼티로 간결하게 사용 할수있음.
 
 2. target이 객체로 또 다시 분해 하여 변경할 수 있음. 가독성이 떨어져 추천하지 않음.
-btn.addEventListener('click', ({ target: { classList} }) => {
+btn.addEventListener('click', ({ target: {classList} }) => {
   classList.toggle('checked');
 });  / 구조 분해로 변경 target 프로퍼티로 간결하게 사용 할수있음.
 
@@ -811,3 +812,502 @@ try {
 }
 
 / finally문에서도 에러 처리가 필요한 경우에는 아래 처럼 try catch문을 중첩해서 활용하는 방법
+
+@@@@@@@@@@ 헷갈리는 용어 @@@@@@@@@
+
+*콜백 함수란? 다른 함수가 실행을 끝낸 뒤, 실행되는 함수.
+자바스크립트에서 함수는 객체(Object)로, 함수는 다른 함수의 인자로 쓰일 수도 있고, 어떤 함수에 의해 리턴될 수도 있음.
+이러한 함수를 고차함수(higher-order functions)라 부르고 인자로 넘겨지는 함수를 콜백 함수(callback function)
+
+
+//함수 정의
+fun max(a: Int, b: Int): Int { //a, b는 매개변수
+  return if (a > b) a else b
+}
+
+fun main() {
+  val x = 3
+  val y = 5
+
+  //함수 호출
+  val result = max(x, y) //x, y는 인자(인수)
+
+  println(result)
+}
+
+//인자의 값이 매개변수에 복사되어 사용된다고 이해하면 된다.
+
+*${ } 사이에 변수나 연산 등을 삽입할 수 있게 되었다. 달러표시
+
+var name = `사과`
+var price = 100
+var num = 5;
+
+console.log(`${name}의 구매가는 ${price * num}원 입니다.`)
+//${}의 결과는 문자열로 자동 변환.
+
+==========================================================
+
+
+
+
+@@@@@ 배열 메소드 I: forEach와 map @@@@@ 
+배열에는 for of 문으로 반복문을 사용하였는데 비슷하게 배열만의 반복문인 forEach와 map 가 있다.
+
+********forEach문*********
+
+const members = ['영훈', '윤수', '동욱', '태호'];
+
+for ( let member of members) {
+  console.log(`${member}님이 입장하셨습니다.`);
+}  //기본 for of문
+
+memebers.forEach(funtion (member) {
+  console.log(`${member}님이 입장하셨습니다.`);
+});  // forEach문 , 파라미터가 하나가 반드시 작성 해야 함. forof문에 변수와 비슷하다고 보면 됨.(member)
+
+memebers.forEach((member) => {
+  console.log(`${member}님이 입장하셨습니다.`);
+}); // Arrow Function으로 대체 가능
+
+============================forEach문 파라미터 
+
+*1. forEach문은 두번째 파라미터 idex(i 간결하게 주로 많이씀)를 가지고 있음.
+memebers.forEach((member, i) => {
+  console.log(`${i} ${member}님이 입장하셨습니다.`);
+}); 
+
+->0 영훈님이 입장하셨습니다.
+  1 윤수님이 입장하셨습니다.
+  2 윤수님이 입장하셨습니다.
+  3 윤수님이 입장하셨습니다.
+
+*다른 배열과 함께 할때 같은 인덱스에 매칭할때도 사용 할 수 있음.
+const firstNames = ['영훈', '윤수', '동욱', '태호'];
+const lastNames = ['강', '이', '손', '성'];
+
+firstNames.forEach((firstName, i) => {
+  console.log(`${lastName[i]}${firstName}님이 입장하셨습니다.`);
+}); 
+
+->강영훈님이 입장하셨습니다.
+  이윤수님이 입장하셨습니다.
+  손윤수님이 입장하셨습니다.
+  성윤수님이 입장하셨습니다.
+
+
+*2. forEach문은 세번째 파라미터 arr (array)
+memebers.forEach((member, i) => {
+ console.log(arr);
+}); 
+->forEach를 호출한 변수의 배열을 나타냄. 일반적으로 잘 사용하지 않음.
+['영훈', '윤수', '동욱', '태호'];
+
+==================================
+
+********forEach문*********
+
+const firstNames = ['영훈', '윤수', '동욱', '태호'];
+const lastNames = ['강', '이', '손', '성'];
+
+const fullNames = firstNames.map((firstName, i) => {
+  return lastName [i] + firstName;
+}); 
+
+const fullNames = firstNames.map((firstName, i) => lastNames[i] + firstName);
+// Arrow Function으로 대체 가능
+
+console.log(fullNames);
+
+-> (4) ["강영훈", "이윤수", "손동욱", "성태호"]
+map메소드를 호출할때 작성한 콜백 함수에 리턴값들로 구성된 배열이 출력.
+
+*단순히 반복 작업을 할 경우 forEch 를, 반복작업을 통해서 새로운 배열을 필요한 경우에는 map메소드를 활용!!!!!
+
+*반복 최대 횟수는 메소드를 처음 호출할 때 그당시 요소의 갯수!!!!!!!
+반복중에 새로운 요소를 추가할경우(push) 무한 루프가 빠지지 않고, 실제로 코드를 실행해보면, 요소갯수만큼 반복 후 요소갯수만큼 추가됨.
+배열의 길이가 줄어들 경우는 반복 횟수도 줄어듬.
+
+
+============== 간결하게 표현하기
+const answer = quiz.map((word, i) => {
+  return word[i];
+}); 
+
+const answer = quiz.map((word, i) => word[i]);
+//콜백 함수 내부에 단순히 return 문 하나만 있기 때문에 다음과 같이 간결하게 작성할 수도 있습니다.
+
+
+@@@@@ 배열 메소드 II: filter와 find @@@@@ 
+우리가 원하는 조건의 요소들만 추려내서 새로운 배열을 만들어 낼 수 있음
+map메소드와 비슷하게 구성, 차이점은 리턴문으로 어떤 값을 전달하는게 아니라 true 혹은 false로 평가되는 조건식을 리턴 해줌
+
+const devices = [
+  { name: 'GalaxyNote', brand: 'Samsung' },
+  { name: 'MacbookPro', brand: 'Apple' },
+  { name: 'iPad', brand: 'Apple' },
+  { name: 'GalaxyWatch', brand: 'Samsung' },
+  { name: 'Gram', brand: 'LG' },
+];
+
+
+*[ filter 메소드 ] 리턴값이 배열, 조건의 모든 요소 배열
+const apples = devices.filter((el) => el.brand === 'Apple');
+
+console.log(apples);
+->(2) [{...}, {...}]  /brand가 Apple 인 요소의 배열 출력
+
+
+*[ find 메소드 ] 하나의 조건의 값, 찾는순간 반복이 종료. 인덱스 중 앞에있는 요소만 출력 후 종료
+/참고로, 없는 값을 find 할경우 undefined가 출력
+
+const apples = devices.filter((el) => el.brand === 'Apple');
+
+console.log(apples);
+->{name: "Gram", brand: "LG"}   /name이 Gram 인 요소를 그대로 출력
+
+
+
+
+============문제!!! filter 메소드를 활용해서 김씨 성을 갖지 않은 사람들을 추려낸 다음 notKims 변수에 담아주세요.========
+
+const seoul = ['김영훈', '김윤수', '김동욱', '강대위', '김영준',
+  '김규식', '김태호', '김효신', '손효준', '김현승', '김재하', '김유나',
+  '김재훈', '김혜선', '김민환', '김규리', '김소원', '김우재', '최영준',
+  '김태순', '김종훈', '김성환', '김승용', '김지혜', '이승욱', '김도현',
+  '김승규', '윤하은', '김유진', '김정민', '김혜정', '김예진', '김여진',
+  '김성희', '김혜수', '김인선', '김상필', '김혜진', '서상원', '김상혜',
+  '김민기', '김그루', '김희지'];
+
+
+const notKims = seoul.filter((name) => {
+  return name[0] !== '김';
+});
+
+// const notKims = seoul.filter((name) => name[0] !== '김'); //
+// Arrow Function을 좀 더 간결하게 작성 방법
+
+console.log(notKims);
+
+->[ '강대위', '손효준', '최영준', '이승욱', '윤하은', '서상원' ]
+
+
+@@@@@ 배열 메소드 III: some과 every @@@@@ 
+const Number = [1, 3, 5, 7, 9];
+
+// some: 조건을 만족하는 요소가 1개 이상 있는지
+const someReturn = numbers.some((el) => el > 5);    /7,9가 있어서 만족
+
+// every: 모든 요소가 조건을 만족하는지 or 조건을 만족하지 않는 요소가 1개 이상 있는지     
+const everyReturn = numbers.every((el) => el > 5);  /1,3,5가 있어서 만족하지 않음
+
+console.log('some:', someReturn);     -> some: true
+console.log('every:', everyReturn);   -> every: false
+
+*some 조건을 만족하는 횟수만큼 반복 후 종료 / every메소드는 만족하지 않는 요소를 찾는순간 false 후 종료
+*만약 메소드를 호출해야할 배열이 빈 배열이면, some: false / every: true 임
+
+
+===========간결하게 표현하는 방식 예시문=========
+//기본 선언문
+function checkSpy(team) {
+
+  const result = team.members.some((member) => member !== '스파이');
+let message = '';
+
+if (result) {
+  message = `[주의!] 팀 ${team.codeName} 에 이중 스파이가 있습니다!`;
+} else {
+  message = `팀 ${team.codeName} 에는 이중 스파이가 없습니다.`;
+}
+
+console.log(message);
+}
+
+
+//조건 연산자를 활용 , 변수를 선언함과 동시에 조건에 맞는 값을 바로 할당할 수 있어서 let 키워드로 미리 변수를 선언하고 값을 재할당하는 번거로움도 해소할 수 있습니다.
+function checkSpy(team) {
+
+  const result = team.members.some((member) => member !== '스파이');
+  const message = result
+    ? `[주의!] 팀 ${team.codeName} 에 이중 스파이가 있습니다!`
+    : `팀 ${team.codeName} 에는 이중 스파이가 없습니다.`;
+
+  console.log(message);
+  }
+
+  //Destructuring 활용, 코드가 한 줄 더 추가되긴 했지만 members와 codeName을 사용할 때 조금 더 간결하게 작성 장점
+  function checkSpy(team) {
+   
+    const { codeName, members } = team;
+    const result = members.some((member) => member !== '스파이');
+    const message = result
+      ? `[주의!] 팀 ${codeName} 에 이중 스파이가 있습니다!`
+      : `팀 ${codeName} 에는 이중 스파이가 없습니다.`;
+  
+    console.log(message);
+  }
+
+  =================================
+
+@@@@@ 배열 메소드 IV: reduce @@@@@ 누적값
+  initialValue = 초기값
+
+reduce 함수는 네 개의 인자를 가집니다.
+
+1. 누산기accumulator (acc)
+2. 현재 값 (cur)
+3. 현재 인덱스 (idx)
+4. 원본 배열 (arr) or (src)
+
+
+*callback
+배열의 각 요소에 대해 실행할 함수. 다음 네 가지 인수를 받습니다.
+
+1. accumulator
+누산기 accumlator는 콜백의 반환값을 누적합니다. 콜백의 이전 반환값 또는, 콜백의 첫 번째 호출이면서 initialValue(초깃값)를 제공한 경우에는 initialValue의 값입니다.
+
+2. currentValue
+처리할 현재 요소.
+
+3.currentIndex (Optional:선택적인)
+처리할 현재 요소의 인덱스. initialValue를 제공한 경우 0, 아니면 1부터 시작합니다.
+
+4.array (Optional:선택적인)
+reduce()를 호출한 배열.
+
+5.initialValu (Optional:선택적인)
+callback의 최초 호출에서 첫 번째 인수에 제공하는 값. 초기값을 제공하지 않으면 배열의 첫번째 요소를 사용합니다. 
+빈 배열에서 초기값 없이 reduce()를 호출하면 오류가 발생합니다. 
+
+*반환 값 = 누적 계산의 결과 값.
+
+* 설명
+reduce()는 빈 요소를 제외하고 배열 내에 배열 내에 존재한는 각 요소에 대해 callback 함수를 한 번씩 실행하는데, 콜백 함수는 다음의 네 인수를 받습니다. 
+1. accumulator     /누산기 acc
+2. currentValue    /현재 값 cur
+3. currentIndex    /현재 인덱스 idx
+4. array           /원본 배열 arr
+콜백의 최초 호출 때 accumulator와 currentValue는 다음 두 가지 값 중 하나를 가질 수 있습니다. 만약 reduce() 함수 호출에서 initialValue(초깃값)를 제공한 경우, acc는 초깃값과 같고, cur(현재값)은 배열의 첫 번째 값과 같습니다.
+초깃값을 제공하지 않았다면, acc는 배열의 첫번째 값과 같고 cur은 두번째와 같습니다.
+//참고: 초깃값을 제공하지 않으면, reduce()는 인덱스 1부터 시작해 콜백 함수를 실행하고 첫 번째 인덱스는 건너 뜁니다. 초깃값을 제공하면 인덱스 0에서 시작합니다.
+배열이 비어있는데 initialValue도 제공하지 않으면 TypeError가 발생합니다. 
+배열의 요소가(위치와 관계없이) 하나 뿐이면서 initialValue를 제공되지 않은 경우, 또는 initialValue는 주어 졌으나 배열이 빈 경우엔 그 단독 값을 callback 호출 없이 반환합니다.
+
+*reduce()작동 방식
+[0, 1, 2, 3, 4].reduce(function(acc,cur,idx,arr)
+   return acc + cur;
+});
+
+
+------다른 사이트 설명------
+
+* 배열.reduce((누적값, 현잿값, 인덱스, 배열&요소) => { return 결과 }, 초깃값);
+
+acc = 누적값
+cur = 현잿값 (el 라고도 쓰임)
+i = 인덱스
+arr = 요소 (사용하는 일이 드뭄, 생략가능)
+
+
+*
+const oneTwoThree = [1, 2, 3];
+
+result = oneTwoThree.reduce((acc, cur, i) => {
+  console.log(acc, cur, i);
+  return acc + cur;
+}, 0);
+// 0 1 0
+// 1 2 1
+// 3 3 2
+result; // 6
+//acc(누적값)이 초깃값인 0부터 시작해서 return하는대로 누적
+
+*
+const oneTwoThree = [1, 2, 3];
+
+result = oneTwoThree.reduce((acc, cur, i) => {
+  console.log(acc, cur, i);
+  return acc + cur;
+});
+// 1 2 1
+// 3 3 2
+result; // 6 
+//초깃값을 적어주지 않으면 자동으로 초깃값이 0번째 인덱스의 값이 됩니다.
+//초깃값을 제공하지 않았다면, acc는 배열의 첫번째 값과 같고 cur은 두번째와 같습니다.
+
+*reduce는 덧셈 곱셈만을 위한 것이 아닙니다. map과 filter와 같은 함수형 메서드를 모두 reduce로 모두 구현할 수 있습니다.
+
+
+
+*****초깃값을 배열로 만들고, 배열에 값들을 push하면 map과 같아집니다.
+const oneTwoThree = [1, 2, 3];
+result = oneTwoThree.reduce((acc, cur) => {
+  acc.push(cur % 2 ? '홀수' : '짝수');
+  return acc;
+}, []);
+result; // ['홀수', '짝수', '홀수']
+
+
+
+***** 조건부로 push를 하면 filter와 같아집니다. 다음은 홀수만 필터링하는 코드입니다.
+result = oneTwoThree.reduce((acc, cur) => {
+  if (cur % 2) acc.push(cur);
+  return acc;
+}, []);
+result; // [1, 3]
+
+
+
+*****reduce를 이용한 경력 문제*****
+reduce 메소드를 일한 경력(개월 수)을 합산한 값을 totalCareer 변수에 담아주세요.
+
+const data = [ 
+  { company: 'Naber', month: 3 },
+	{ company: 'Amajohn', month: 12 },
+	{ company: 'Coogle', month: 10 },
+  { company: 'Ittel', month: 6 },
+  { company: 'Sasung', month: 4 },
+  { company: 'CaCao', month: 3 },
+	{ company: 'Microhard', month: 17 },
+];
+
+
+const totalCareer = data.reduce((acc, el) => {
+  return acc + el.month;
+}, 0);
+//경력을 누적으로 계산해야 되니깐, 초기값은 0으로 두고 매번 실행하는 콜백함수는 첫 번째 파라미터에 각 요소의 month 프로퍼티 값을 더해서 리턴
+
+console.log(`상원이의 경력은 총 ${totalCareer}개월입니다.`);
+
+실행결과-> 상원이의 경력은 총 55개월입니다.
+// 첫 번째 반복 때는 콜백 함수의 첫 번째 파라미터(acc)에 초기값 0이 전달되면서 0 + 3 이 리턴되고, 두 번째 반복 때는 이전 콜백 함수가 리턴한 3 이 첫 번째 파라미터(acc)에 전달되니깐, 3 + 12 가 리턴되겠죠? 최종적으로는 모든 요소들의 month 프로퍼티를 더한 값이 리턴되니깐 totalCareer 변수에는 55 가 할당
+
+
+
+@@@@@ sort @@@@@ 배열을 정렬 메소드
+// sort 메소드에 아무런 아규먼트도 전달하지 않을 때는 기본적으로 유니코드에 정의된 문자열 순서에 따라 정렬
+const letters = ['D', 'C', 'E', 'B', 'A'];
+const numbers = [1, 10, 4, 21, 36000];
+
+letters.sort();
+numbers.sort();
+
+console.log(letters); // (5) ["A", "B", "C", "D", "E"]
+console.log(numbers); // (5) [1, 10, 21, 36000, 4]
+
+
+**sort 메소드에 콜백함수를 아규먼트로 작성해주면 숫자 정렬할 수 있음**
+const numbers = [1, 10, 4, 21, 36000];
+
+// 오름차순 정렬
+numbers.sort((a, b) => a - b);
+console.log(numbers); // (5) [1, 4, 10, 21, 36000]
+
+// 내림차순 정렬
+numbers.sort((a, b) => b - a);
+console.log(numbers); // (5) [36000, 21, 10, 4, 1]
+
+*sort 메소드를 사용할 때 한 가지 주의해야될 부분은 메소드를 실행하는 원본 배열의 요소들을 정렬
+한 번 정렬하고 나면 정렬하기 전의 순서로 다시 되돌릴 수 없음
+
+
+
+@@@@@ reverse @@@@@ 배열의 순서를 뒤집어 주는 메소드
+const letters = ['a', 'c', 'b'];
+const numbers = [421, 721, 353];
+
+letters.reverse();
+numbers.reverse();
+
+console.log(letters); // (3) ["b", "c", "a"]
+console.log(numbers); // (3) [353, 721, 421]
+*sort 메소드와 마찬가지로 원본 배열의 요소들을 뒤집어 버린다는 점은 꼭 주의
+
+
+@@@@@ Map @@@@@ 객체와 비슷한 메소드, 객체: property name을 통해 이름이 있는 여러 값들을 묶을 때 활용
+
+* 할당연산자를 통해 값을 추가하고 점 표기법이나 대괄호 표기법으로 접근하는 일반 객체와 다르게 
+Map은 메소드를 통해서 값을 추가하거나 접근
+
+new 키워드를 통해서 Map을 생성 후 map 안에 메소드를 통해 값들을 다룰 수 있음.
+
+1. map.set(key, value): key를 이용해 value를 추가하는 메소드.
+2. map.get(key): key에 해당하는 값을 얻는 메소드. key가 존재하지 않으면 undefined를 반환.
+3. map.has(key): key가 존재하면 true, 존재하지 않으면 false를 반환하는 메소드.
+4. map.delete(key): key에 해당하는 값을 삭제하는 메소드.
+5. map.clear(): Map 안의 모든 요소를 제거하는 메소드.
+6. map.size: 요소의 개수를 반환하는 프로퍼티. (메소드가 아닌 점 주의! 배열의 length 프로퍼티와 같은 역할)
+
+// set 메소드
+codeit.set('title', '문자열 key');
+codeit.set(2017, '숫자형 key');
+codeit.set(true, '불린형 key');
+
+// get 메소드
+console.log(codeit.get(2017)); // 숫자형 key
+console.log(codeit.get(true)); // 불린형 key
+console.log(codeit.get('title')); // 문자열 key
+
+// has 메소드
+console.log(codeit.has('title')); // true
+console.log(codeit.has('name')); // false
+
+// size 프로퍼티
+console.log(codeit.size); // 3
+
+// delete 메소드
+codeit.delete(true);
+console.log(codeit.get(true)); // undefined
+console.log(codeit.size); // 2
+
+// clear 메소드
+codeit.clear();
+console.log(codeit.get(2017)); // undefined
+console.log(codeit.size); // 0
+
+
+@@@@@ Set @@@@@ 배열과 비슷한 메소드, 배열: index를 통해 순서가 있는 여러 값들을 묶을 때 유용하게 활용
+new 키워드로 Set을 만들 수 있고, 아래와 같은 메소드를 통해 Set 안의 여러 값들을 다룰 수 있습니다.
+
+1. set.add(value): 값을 추가하는 메소드. (메소드를 호출한 자리에는 추가된 값을 가진 Set 자신을 반환.)
+2. set.has(value): Set 안에 값이 존재하면 true, 아니면 false를 반환하는 메소드.
+3. set.delete(value): 값을 제거하는 메소드. (메소드를 호출한 자리에는 셋 내에 값이 있어서 제거에 성공하면 true, 아니면 false를 반환.)
+4. set.clear(): Set 안의 모든 요소를 제거하는 메소드.
+5. set.size: 요소의 개수를 반환하는 프로퍼티. (메소드가 아닌 점 주의! 배열의 length 프로퍼티와 같은 역할)
+
+// Set 생성
+const members = new Set();
+
+// add 메소드
+members.add('영훈'); // Set(1) {"영훈"}
+members.add('윤수'); // Set(2) {"영훈", "윤수"}
+members.add('동욱'); // Set(3) {"영훈", "윤수", "동욱"}
+members.add('태호'); // Set(4) {"영훈", "윤수", "동욱", "태호"}
+
+// has 메소드
+console.log(members.has('동욱')); // true
+console.log(members.has('현승')); // false
+
+// size 프로퍼티
+console.log(members.size); // 4
+
+// delete 메소드
+members.delete('종훈'); // false
+console.log(members.size); // 4
+members.delete('태호'); // true
+console.log(members.size); // 3
+
+// clear 메소드
+members.clear();
+console.log(members.size); // 0
+
+*특이한 점은 Set에는 개별 값에 바로 접근하는 방법이 없다는 점
+*Set은 중복되는 값을 허용하지 않는 독특한 특징
+
+*배열 내에서 중복을 제거한 값들의 묶음을 만들 때 Set을 활용
+const numbers = [1, 3, 4, 3, 3, 3, 2, 1, 1, 1, 5, 5, 3, 2, 1, 4];
+const uniqNumbers = new Set(numbers);
+
+console.log(uniqNumbers); // Set(5) {1, 3, 4, 2, 5}
+

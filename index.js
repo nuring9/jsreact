@@ -1,3 +1,214 @@
+@@@@@@@@기본 문법
+// 객체.메소드(파라미터);
+// 객체[메소드](파라미터);
+
+// *객체란 이름(name)과 값(value) 구성된 프로퍼티(propery)
+// - name = value;
+// *프로퍼티의 값으로 함수가 올때 이것을 메소드(method)
+
+
+
+// * 프로퍼티를 참조하는 방법
+// 객체이름.프로퍼티이름
+// or
+// 객체이름['프로퍼티이름']
+
+// * 메소드를 참조하는 방법
+// 객체이름.메소드이름()
+// or
+// 객체이름['메소드']();
+
+// /// 5월 8일///
+
+// *함수표시 (예시)
+// function 함수이름(){
+// console.log('값');
+// }
+
+// function 함수이름(){
+// return x * x ;
+// }
+
+// * return 과 console.log 차이
+
+// function printSquare(x) {
+//  console.log(x * x);
+// }
+
+// printSquare(3);
+// => 9 
+
+// ---------------------------
+
+// function getSquare(x) {
+//  return x * x;
+// }
+
+// getSquare(3);
+// =>값이 호출이 안됨.
+
+// console.log(getSquare(3));
+// => 9
+
+
+
+
+// ****************5/19
+
+// for문
+// for(초기화부분; 조건부분; 추가동작부분) {
+// 동작부분
+// }
+
+// for (let i = 1; i <= 10; i++){
+// console.log('${i} 코드잇 최고!');
+// }
+
+// => 1  코드잇 최고!
+//      2  코드잇 최고!
+//      3  코드잇 최고!  
+//      .
+//      .
+//      .
+//     10  코드잇 최고!
+
+// for in문 (객체의 프로퍼티 네임들을 나열할때 쓰임)
+// for (변수 in 객체){
+// 동작부분
+// }
+
+
+// let codeit = {
+//  name: '코드잇',
+//  bornYear: 2017,
+//  isVerNice: true,
+//  worstCourse: null,
+//  bestCoures: '자바스크립트'
+// }
+
+// for (let key in codeit) {  //key라는 변수를 만들고, codeit객체의 프로퍼티 갯수만큼 반복 codeit의 네임들을 출력
+// console.log(key);
+// }
+// =>
+//  name
+//  bornYear
+//  isVerNice
+//  worstCourse
+//  bestCoures
+
+// for(let key in codeit) {
+//  console.log(codeit[key]);   // 대괄호 표기법으로 프로퍼티 밸류값 출력도 가능
+// }
+
+// =>
+// 코드잇
+// 2017
+// true
+// null 
+// 자바스크립트
+
+
+
+
+// ==========
+
+// 반복문 for / while 문 예시 (배열문나열 문제)
+
+// for (let i = 0; i < 6; i++) {
+//   console.log(dataType[i]);
+// }
+
+// let i = 0;
+// while (i < 6) {
+//   console.log(dataType[i]);
+//   i++;
+// }
+
+
+
+// * splice의 for문의 사용시 증감된 숫자가 영향을 받으므로
+// i--; 로 줄여줘야함
+
+
+// //splice(startIndex, deleteCount, item)
+// //배열의 첫 요소를 삭제: shift()
+// members.splice(0, 1);
+// members.shift();
+
+// console.log(members);
+
+// //배열의 마지막 요소를 삭제: pop()
+// members.splice(members.length - 1, 1);
+// mambers.pop();
+
+// //배열의 첫 요소로 값 추가: unshift(value)
+// members.splice(0, 0, 'abcd');
+// members.unshift('abcd');
+
+// //배열의 마지막 요소로 값 추가: push(value)
+// members.splice(members.length, 0, 'efgh');
+// members.push('efgh');
+
+
+// -----------
+// for ... of 문 (배열의 길이만큼 반복문) 
+// *forin문은 변수에 프로퍼티 네임이 할당 but,
+//  forof문은 배열에 요소가 할당
+
+// for (변수 of 배열) {
+//  동작부분;
+// }
+
+// ex)
+// let influencer = ['suwonlog', 'small.tiger', 'Minam.ludens', 'cu_convenience24']
+
+// for (let element of influencer) {
+// console.log(element);
+// }
+
+// //for문으로 같은 값을 구현할 때
+// for (let i = 0; i < influencer.length; i++) {
+//  console.log(influencer[i]);
+// }
+// //
+
+// =>
+// suwonlog
+// small.tiger
+// minam.ludens
+// cu_convenience24
+
+
+// ----------------
+// 변수.toFixed(3)  -> (+붙이면 number)
+// =>소수점자리수
+
+// 변수.toString(2) -> 2진수 변환, (8)8진수, (16)16진수
+
+// 소수점 더하기 (toFixed , math.round)
+// console.log(+변수.toFixed(1));
+// console.log(math.round(변수 * 10) / 10);
+
+// *참조형 복사하기(forin문활용)-------------
+// function cloneObject(object) {
+// let temp = {};
+
+// for (let key in object) {
+//  temp[key] = object[key];
+// }
+
+// return temp;
+// };
+
+// let course1 = {
+//  title: '파이썬 프로그래밍 기초',
+//  language: 'Python'
+// };
+
+// let course2 = cloneObject(course1); 
+=============================================-
+
+
 
 //**태그 선택하기**/
 
