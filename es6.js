@@ -1311,3 +1311,177 @@ const uniqNumbers = new Set(numbers);
 
 console.log(uniqNumbers); // Set(5) {1, 3, 4, 2, 5}
 
+
+@@@@@ 모듈 module @@@@@ 
+
+*모듈화: 관리하기 편하도록 목적에 따라 코드를 파일로 분리하는 것
+*모듈: 모듈화한 파일
+
+*모듈 스코프 (Module Scope) = 모듈파일은 이 파일 안에서만 사용할 수 있어야 함 (독립적인 스코프)
+모듈 파일 안에서 선언한 변수는 외부에서 자유롭게 접근할 수 없도록 막아야 함.
+index.html 파일의 script 태그에 type 속성을 module으로 지정 해줘야 함.
+ <script type="module" src="printer.js"></script>
+ <script type="module" src="index.js"></script>
+
+ 모듈은 브라우저에서 바로 실행이 되지 않고, 서버로 연동 시켜야하는데, vs에 있는 확장 기능으로 오류 해결이 가능함.
+ vs 프로그램의 extensions(왼쪽 탭) --> live server 검색 후 설치 --> go live 클릭 (서버를 통해 실행된 html이 자동으로 열림)
+
+ * export =내보내다. 다른 모듈에 값이나 함수가 적용되도록 내보내기
+ //선언문 앞에 export을 붙여주면 다른 파일로 내보낼 수 있음.
+ // 배열 내보내기
+export let months = ['Jan', 'Feb', 'Mar','Apr', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+// 상수 내보내기
+export const MODULES_BECAME_STANDARD_YEAR = 2015;
+
+// 함수 내보내기
+export function sayHi(user) {
+    alert('Hello, ${user}');
+  }
+  
+// 클래스 내보내기
+export class User {
+  constructor(name) {
+    this.name = name;
+  }
+}
+
+
+
+
+
+*import = 가져오다. exort로 내보낸 모듈은 import 지시자를 활용해 가져올 수 있음.
+//import 와 from 을 사용하여 객체 형태로 가져옴.
+import { months, year, sayHi,User } from './printer.js';
+
+*사실상 내보내고 가져오기 때문에 index.html 파일에서는 진입점 역할을 하는 js파일 하나만 설정. 
+
+
+
+
+
+*모듈파일에서 import 이름 바꾸기 as 키워드 = 모듈파일에서 이미 사용하고 있는 이름을 상황에 따라서 사용 하고 싶을때 변경
+//가져온 이름을 왼쪽 기준으로 as 키워드 작성 후 오른쪽에 변경할 이름
+import {title as printerTitle, print} from './printer.js';
+
+//as를 활용해 exprt에서도 이름을 바꿔 내보낼 수도 있습니다.
+export {title as printerTitle, print};
+
+
+
+*한꺼번에 다루기
+1. Named Export
+//만약 내보내는 값이 많다면 export{값, 값}로 선택할 수 있다.
+import {title as printerTitle, print} from './printer.js';
+->
+import {print} from './printer.js'; // 값만 작성
+
+
+2. 와일드카드 문자 ( Wildcard Character ) '*' // 모든 값을 가져오기때문에 권장하지 않음
+//만약 들여오는 값이 많다면 *로 모두 선택할 수 있다.
+import * as printerJS from './printer.js';  //printer.js 모듈 파일에서 모든 값을 객체형식으로 들여온다.
+//중갈호 부분을 모두 삭제하고, *를 쓴다음에 as 키워드를 이용해서 새로 이름을 붙여주면, printer 모든 값이 printerJS로 전달. 
+print(printerJS.name); //// 객체를 호출하는 방식으로 접근할 수 있다.
+
+
+
+* export 에서도 한꺼번에 내보낼 방법 / //선언문마다 매번 export 키워드를 붙여주지 않아도 됨. 마지막 묶은 곳만 작성
+
+const title = 'CodeitPrinter';
+
+function print(value) {
+    console.log(value);
+}
+// 중괄호를 사용하여 객체로 묶어서 내보낼 수 있다.
+export default { title, print };
+
+
+* default export = 하나의 대상만 내보는 방식, 변수나 함수 이름으로 export 뿐만 아니라 값 하나로만으로도 내보낼 수 있음
+-파일 안에서 딱 한번만 사용할 수 있음.
+//Codeit 이라는 값을 내보냄. export 오른쪽에 default 작성
+export default 'Codeit'
+
+//import 에서는 default 값만 사용할 수 없고, 반듯이 as 키워드를 사용해서 이름을 붙여줘야함.
+import {
+ default as codeit,
+ tilte as membersTitle,
+ data as memberData
+} from './members.js';
+
+//default는 import 할때 특별한 문법을 사용할 수도 있음.
+import codeit, {   //default의 이름을 중괄호 앞으로 빼줌
+  tilte as membersTitle,
+  data as memberData
+ } from './members.js';
+
+ *export default는 named export, 와일드카드 문자와 비슷하게 값들을 하나로 묶어 객체로 공유할 때도 사용할 수 있다.
+
+* Named export = 변수나 함수 이름으로 여러 대상을 내보내는 방식
+
+* default 키워드를 함께 활용하면, 축약형 문법으로 import를 할 수 있어서, 일반적으로 모듈 파일에서 export 대상이 하나라면, default export를 하는 것이 조금 더 간결한 코드를 구성하는 데 도움
+export default addMenu; // './add.js'에서 내보냄
+export default deleteMenu; // './delete.js'에서 내보냄
+export default rollMenu; //'./roll.js'에서 내보냄
+->
+import addMenu from './add.js';
+import deleteMenu from './delete.js';
+import rollMenu from './roll.js';
+
+//default export된 대상을 import할 때 축약 비교하기
+import { defult as modules } from './modules.js';
+import modules from './modules.js'; //만들어준 이름으로만 사용하여 가져올 수 있음
+
+
+===모듈 한번 더 정리===
+
+* export와 import 문법 정리
+// printer.js
+export const title = 'CodeitPrinter';
+
+export function print(value) {
+  console.log(value);
+};
+
+// index.js
+import { title, print } from './printer.js'; //객체형태
+
+print(title); //객체를 출력할 때
+->CodeitPrinter
+
+
+* 한꺼번에 import 하기
+import할 때 와일드카드 문자(*)와 as를 활용하면 모듈 파일에서 export하는 모든 대상을 하나의 객체로 불러올 수 있습니다.
+
+// printer.js
+export const title = 'CodeitPrinter';
+
+export function print(value) {
+  console.log(value);
+};
+
+// index.js
+import * as printerJS from './printer.js';
+
+console.log(printerJS.title); // CodeitPrinter
+console.log(printerJS.print); // ƒ print(value) { console.log(value); }
+
+*한꺼번에 export 하기
+변수나 함수 앞에 매번 export 키워드를 붙일 수도 있지만, 선언된 변수나 함수를 하나의 객체로 모아 한꺼번에 내보낼 수도 있습니다.
+이때 as 키워드를 활용하면 이름을 변경해서 export할 수도 있습니다.
+const title = 'CodeitPrinter';
+
+function print(value) {
+  console.log(value);
+}
+
+function printArr(arr) {
+  arr.forEach((el, i) => {
+    console.log(`${i + 1}. ${el}`);
+  });
+}
+
+export { title as printerTitle, print, printArr }; 
+
+
+*rototype이나 class, closure나 Execution Context와 같이 조금 더 복잡하거나 추상적인 영역의 개념은
+따로 검색하여 공부하기(코드잇 강의중에 내용이 없음)
