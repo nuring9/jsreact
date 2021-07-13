@@ -1,218 +1,225 @@
 @@@@@@@@기본 문법
-// 객체.메소드(파라미터);
-// 객체[메소드](파라미터);
+ 객체.메소드(파라미터);
+ 객체[메소드](파라미터);
 
-// *객체란 이름(name)과 값(value) 구성된 프로퍼티(propery)
-// - name = value;
-// *프로퍼티의 값으로 함수가 올때 이것을 메소드(method)
-
-
-
-// * 프로퍼티를 참조하는 방법
-// 객체이름.프로퍼티이름
-// or
-// 객체이름['프로퍼티이름']
-
-// * 메소드를 참조하는 방법
-// 객체이름.메소드이름()
-// or
-// 객체이름['메소드']();
-
-// /// 5월 8일///
-
-// *함수표시 (예시)
-// function 함수이름(){
-// console.log('값');
-// }
-
-// function 함수이름(){
-// return x * x ;
-// }
-
-// * return 과 console.log 차이
-
-// function printSquare(x) {
-//  console.log(x * x);
-// }
-
-// printSquare(3);
-// => 9 
-
-// ---------------------------
-
-// function getSquare(x) {
-//  return x * x;
-// }
-
-// getSquare(3);
-// =>값이 호출이 안됨.
-
-// console.log(getSquare(3));
-// => 9
+ *객체란 이름(name)과 값(value) 구성된 프로퍼티(propery)
+ - name = value;
+ *프로퍼티의 값으로 함수가 올때 이것을 메소드(method)
 
 
 
+ * 프로퍼티를 참조하는 방법
+ 객체이름.프로퍼티이름
+ or
+ 객체이름['프로퍼티이름']
 
-// ****************5/19
+ * 메소드를 참조하는 방법
+ 객체이름.메소드이름()
+ or
+ 객체이름['메소드']();
 
-// for문
-// for(초기화부분; 조건부분; 추가동작부분) {
-// 동작부분
-// }
+  5월 8일
 
-// for (let i = 1; i <= 10; i++){
-// console.log('${i} 코드잇 최고!');
-// }
+  *함수 문법
+  function 함수이름(매개변수1, 매개변수2,...) {
+   함수가 호출되었을 때 실행하고자 하는 실행문;
+  }
+ 
 
-// => 1  코드잇 최고!
-//      2  코드잇 최고!
-//      3  코드잇 최고!  
-//      .
-//      .
-//      .
-//     10  코드잇 최고!
-
-// for in문 (객체의 프로퍼티 네임들을 나열할때 쓰임)
-// for (변수 in 객체){
-// 동작부분
-// }
+ *함수표시 (예시)
+ function 함수이름(){
+ console.log('값');
+ }
 
 
-// let codeit = {
-//  name: '코드잇',
-//  bornYear: 2017,
-//  isVerNice: true,
-//  worstCourse: null,
-//  bestCoures: '자바스크립트'
-// }
+ function 함수이름(){
+ return x * x ;
+ }
 
-// for (let key in codeit) {  //key라는 변수를 만들고, codeit객체의 프로퍼티 갯수만큼 반복 codeit의 네임들을 출력
-// console.log(key);
-// }
-// =>
-//  name
-//  bornYear
-//  isVerNice
-//  worstCourse
-//  bestCoures
+ * return 과 console.log 차이
 
-// for(let key in codeit) {
-//  console.log(codeit[key]);   // 대괄호 표기법으로 프로퍼티 밸류값 출력도 가능
-// }
+ function printSquare(x) {
+  console.log(x * x);
+ }
 
-// =>
-// 코드잇
-// 2017
-// true
-// null 
-// 자바스크립트
+ printSquare(3);
+ => 9 
+
+ ---------------------------
+
+ function getSquare(x) {
+  return x * x;
+ }
+
+ getSquare(3);
+ =>값이 호출이 안됨.
+
+ console.log(getSquare(3));
+ => 9
 
 
 
 
-// ==========
+ ****************519
 
-// 반복문 for / while 문 예시 (배열문나열 문제)
+ for문
+ for(초기화부분; 조건부분; 추가동작부분) {
+ 동작부분
+ }
 
-// for (let i = 0; i < 6; i++) {
-//   console.log(dataType[i]);
-// }
+ for (let i = 1; i <= 10; i++){
+ console.log('${i} 코드잇 최고!');
+ }
 
-// let i = 0;
-// while (i < 6) {
-//   console.log(dataType[i]);
-//   i++;
-// }
+ => 1  코드잇 최고!
+      2  코드잇 최고!
+      3  코드잇 최고!  
+      .
+      .
+      .
+     10  코드잇 최고!
 
-
-
-// * splice의 for문의 사용시 증감된 숫자가 영향을 받으므로
-// i--; 로 줄여줘야함
-
-
-// //splice(startIndex, deleteCount, item)
-// //배열의 첫 요소를 삭제: shift()
-// members.splice(0, 1);
-// members.shift();
-
-// console.log(members);
-
-// //배열의 마지막 요소를 삭제: pop()
-// members.splice(members.length - 1, 1);
-// mambers.pop();
-
-// //배열의 첫 요소로 값 추가: unshift(value)
-// members.splice(0, 0, 'abcd');
-// members.unshift('abcd');
-
-// //배열의 마지막 요소로 값 추가: push(value)
-// members.splice(members.length, 0, 'efgh');
-// members.push('efgh');
+ for in문 (객체의 프로퍼티 네임들을 나열할때 쓰임)
+ for (변수 in 객체){
+ 동작부분
+ }
 
 
-// -----------
-// for ... of 문 (배열의 길이만큼 반복문) 
-// *forin문은 변수에 프로퍼티 네임이 할당 but,
-//  forof문은 배열에 요소가 할당
+ let codeit = {
+  name: '코드잇',
+  bornYear: 2017,
+  isVerNice: true,
+  worstCourse: null,
+  bestCoures: '자바스크립트'
+ }
 
-// for (변수 of 배열) {
-//  동작부분;
-// }
+ for (let key in codeit) {  key라는 변수를 만들고, codeit객체의 프로퍼티 갯수만큼 반복 codeit의 네임들을 출력
+ console.log(key);
+ }
+ =>
+  name
+  bornYear
+  isVerNice
+  worstCourse
+  bestCoures
 
-// ex)
-// let influencer = ['suwonlog', 'small.tiger', 'Minam.ludens', 'cu_convenience24']
+ for(let key in codeit) {
+  console.log(codeit[key]);    대괄호 표기법으로 프로퍼티 밸류값 출력도 가능
+ }
 
-// for (let element of influencer) {
-// console.log(element);
-// }
-
-// //for문으로 같은 값을 구현할 때
-// for (let i = 0; i < influencer.length; i++) {
-//  console.log(influencer[i]);
-// }
-// //
-
-// =>
-// suwonlog
-// small.tiger
-// minam.ludens
-// cu_convenience24
+ =>
+ 코드잇
+ 2017
+ true
+ null 
+ 자바스크립트
 
 
-// ----------------
-// 변수.toFixed(3)  -> (+붙이면 number)
-// =>소수점자리수
 
-// 변수.toString(2) -> 2진수 변환, (8)8진수, (16)16진수
 
-// 소수점 더하기 (toFixed , math.round)
-// console.log(+변수.toFixed(1));
-// console.log(math.round(변수 * 10) / 10);
+ ==========
 
-// *참조형 복사하기(forin문활용)-------------
-// function cloneObject(object) {
-// let temp = {};
+ 반복문 for  while 문 예시 (배열문나열 문제)
 
-// for (let key in object) {
-//  temp[key] = object[key];
-// }
+ for (let i = 0; i < 6; i++) {
+   console.log(dataType[i]);
+ }
 
-// return temp;
-// };
+ let i = 0;
+ while (i < 6) {
+   console.log(dataType[i]);
+   i++;
+ }
 
-// let course1 = {
-//  title: '파이썬 프로그래밍 기초',
-//  language: 'Python'
-// };
 
-// let course2 = cloneObject(course1); 
+
+ * splice의 for문의 사용시 증감된 숫자가 영향을 받으므로
+ i--; 로 줄여줘야함
+
+
+ splice(startIndex, deleteCount, item)
+ 배열의 첫 요소를 삭제: shift()
+ members.splice(0, 1);
+ members.shift();
+
+ console.log(members);
+
+ 배열의 마지막 요소를 삭제: pop()
+ members.splice(members.length - 1, 1);
+ mambers.pop();
+
+ 배열의 첫 요소로 값 추가: unshift(value)
+ members.splice(0, 0, 'abcd');
+ members.unshift('abcd');
+
+ 배열의 마지막 요소로 값 추가: push(value)
+ members.splice(members.length, 0, 'efgh');
+ members.push('efgh');
+
+
+ -----------
+ for ... of 문 (배열의 길이만큼 반복문) 
+ *forin문은 변수에 프로퍼티 네임이 할당 but,
+  forof문은 배열에 요소가 할당
+
+ for (변수 of 배열) {
+  동작부분;
+ }
+
+ ex)
+ let influencer = ['suwonlog', 'small.tiger', 'Minam.ludens', 'cu_convenience24']
+
+ for (let element of influencer) {
+ console.log(element);
+ }
+
+ for문으로 같은 값을 구현할 때
+ for (let i = 0; i < influencer.length; i++) {
+  console.log(influencer[i]);
+ }
+ 
+
+ =>
+ suwonlog
+ small.tiger
+ minam.ludens
+ cu_convenience24
+
+
+ ----------------
+ 변수.toFixed(3)  -> (+붙이면 number)
+ =>소수점자리수
+
+ 변수.toString(2) -> 2진수 변환, (8)8진수, (16)16진수
+
+ 소수점 더하기 (toFixed , math.round)
+ console.log(+변수.toFixed(1));
+ console.log(math.round(변수 * 10)  10);
+
+ *참조형 복사하기(forin문활용)-------------
+ function cloneObject(object) {
+ let temp = {};
+
+ for (let key in object) {
+  temp[key] = object[key];
+ }
+
+ return temp;
+ };
+
+ let course1 = {
+  title: '파이썬 프로그래밍 기초',
+  language: 'Python'
+ };
+
+ let course2 = cloneObject(course1); 
 =============================================-
 
 
 
-//**태그 선택하기**/
+**태그 선택하기**
 
-//1. document.getElementById('id')	/  HTML id속성으로 태그 선택하기 /	id에 해당하는 태그 하나
+1. document.getElementById('id')	/  HTML id속성으로 태그 선택하기 /	id에 해당하는 태그 하나
 const myTag = document.getElementById('btns');
 console.log(myTag);
 // 딱 그 태그만 보여주는게 아니라 해당태그 내부에 있는 모든 내용들이 표시
@@ -220,7 +227,7 @@ console.log(myTag);
 //없는 id를 불러오면 null값이 리턴
 
 
-//2. document.getElementsByClassName('class') / HTML class속성으로 태그 선택하기 /	class에 해당하는 태그 모음(HTMLCollection) 
+2. document.getElementsByClassName('class') / HTML class속성으로 태그 선택하기 /	class에 해당하는 태그 모음(HTMLCollection) 
 // 배열은 아니지만 유사배열 //요소의 순서는 위에서 차례대로
 const mytags = doucument.getElementsByClassName('color-btn');
 
@@ -245,7 +252,7 @@ const btns = document.getElementsByTagName('button');
 
 
 
-//4. document.querySelector('css')	/ css 선택자로 태그 선택하기 /	css 선택자에 해당하는 태그 중 가장 첫번째 태그 하나
+4. document.querySelector('css')	/ css 선택자로 태그 선택하기 /	css 선택자에 해당하는 태그 중 가장 첫번째 태그 하나
 const myTag = document.querySelector('#myNunber');
 console.log(myTag);
 const myTag2 = ducument.getElementById('myNunber');
@@ -263,7 +270,7 @@ console.log(myTag);
 // 첫번째 선택됨
 //없는 요소를 선택할 경우 null
 
-//5. document.querySelectorAll('css')	css / 선택자로 태그 선택하기	/ css 선택자에 해당하는 태그 모음(NodeList)
+5. document.querySelectorAll('css')	css / 선택자로 태그 선택하기	/ css 선택자에 해당하는 태그 모음(NodeList)
 const myTags = documnet.querySelectorAll('.color-btn');
 console.log(myTags);
 //NodeList 라는 유사배열이(color-btn을 css선택자를 가지고있는) 출력됨
@@ -324,7 +331,7 @@ console.log(myTag.lastElementChild);
 //** 요소 노드 주요 프로퍼티 **//
 const myTag = doucument.querySelector('#list-1');
 
-//1. innerHTML 요소 안에 있는 hmlt을 자체를 문자열로 리턴
+1. innerHTML 요소 안에 있는 hmlt을 자체를 문자열로 리턴
 console.log(myTag.innerHTML);
 
     <li>Ragdoll</li>
@@ -339,7 +346,7 @@ console.log(myTag.innerHTML);
 myTag.innerHTML += '<li>Exotic</li>';//마지막 부분에 요소로 추가 됨
 //태그의 줄바꿈, 들여쓰기까지 출력이됨, 요소 안에 HTML을 수정할 때 더 활용됨
 
-//2. outerHTML 해당요소가 포함된 전체 HTML코드를 문자열로 리턴 
+2. outerHTML 해당요소가 포함된 전체 HTML코드를 문자열로 리턴 
 console.log(myTag.outerHTML);
 
 <ul id="list-1">
@@ -356,7 +363,7 @@ console.log(myTag.outerHTML);
 myTag.outerHTML = '<ul id-"new-list"><li>Exotic</li></ul>';
 //새로운 값을 할당했을 때 요소가 새로운 요소로 교체 됨. 수정하는것으로 오해하는데 선택한 요소는 사라짐.
 
-//3. textContent = innerHTML와 비슷 한데 텍스트만 리턴
+3. textContent = innerHTML와 비슷 한데 텍스트만 리턴
 console.log(myTag.textContent);
 
     Ragdoll
@@ -373,11 +380,11 @@ console.log(myTag.textContent);
 
 //** 요소 노드 추가하기 **//
 const tomorrow = document.querySelector('#tomorrow');
-// 1. 요소 노드 만들기: document.createElement('태그이름')
+ 1. 요소 노드 만들기: document.createElement('태그이름')
 const first = document.createElement('li');
-// 2. 요소 노드 꾸미기: textContent(텍스트만 추가할 때), innerHTML (내부의 HTML 태그가 필요할때)
+ 2. 요소 노드 꾸미기: textContent(텍스트만 추가할 때), innerHTML (내부의 HTML 태그가 필요할때)
 first.textContent = '추가하는텍스트';
-// 3. 요소 노드 추가하기: NODE.prepent, append, after, before
+ 3. 요소 노드 추가하기: NODE.prepent, append, after, before
 tomorrow.prepend(first);
 tomorrow.append(last); //마지막 자식노드
 tomorrow.before(prev); //형제노드 앞쪽
@@ -423,15 +430,15 @@ const tomorrow = documnet.querySelector('#tomorrow')
 const item = tomorrow.firstElementChild;
 const Link = item.firstElementChild;
 
-//1. id 속성
+1. id 속성
 console.log(tomorrow); //<ol id="tomorrow" href="https://www.codeit.kr"> ..</ol>
 console.log(tomorrow.id); //tomorrow
 
-//2. class 속성
+2. class 속성
 console.log(item); //<li class="item">...</li>
 console.log(item.className); //item
 
-//3.href 속성
+3.href 속성
 console.log(link); //<a href="링크주소">
 console.log(link.href); //링크주소만
 console.log(tomorrow.href); //undefined 가 출력(비표준 속성)
@@ -534,35 +541,35 @@ for (let tag of fields){
   <b field="state"></b>
 </p>
 
-// 3.스타일이나 데이터 변경에 활용
+3.스타일이나 데이터 변경에 활용
 // getAttribute 메소드를 활용해서 속성값을 가져오고, setAttribute 메소드를 활용해서 속성값을
 // 설정해 주는 원리로 이벤트를 통해 실시간으로 스타일을 변경하거 데이터를 변경하는데 활용할 수 있다.
 // 때로는 class를 다루는 것보다 setAttribute로 비표준 속성을 변경하는게 스탕리을 다루기 오히려 편리한 경우도 있다. 
 
 //** 중간 종합정리 **/
-// 1. window 객체
+ 1. window 객체
 // window 객체는 브라우저 창을 대변하면서 자바스크립트에서 최상단 존재하는 객체
 // 자바스크립트 코드 어느 곳에서나 항상 접근할 수 있는 객체이기 때문에 전역 객체, 영어로는 Global Object라고 부름.
 // 어떤 프로퍼티나 메소드를 사용하든 결국 전역 객체 내부의 것이기 때문에 앞에 window.을 생략
 
-// 2.DOM
+ 2.DOM
 // DOM이란 Document Object Model의 약자로, 한국어로는 문서 객체 모델.
 // 간단하게 표현하면 웹페이지에 나타나는 HTML 문서 전체를 객체로 표현한 것
 // 이때 각 객체를 노드(Node)라는 용어로 표현, 태그는 요소 노드, 문자는 텍스트 노드로 구분.
 
-// 3. DOM트리
+3. DOM트리
 // HTML의 계층 구조는 DOM에서도 반영되는데 이러한 계층구조를 나무에 비유해서 DOM 트리라고 부름.
 // 각 노드 간의 관계는 부모, 자식, 형제라는 용어로 표현.
 
-//  Node란?
+ Node란?
 // HTML DOM은 노드(Node)라고 불리는 계층적 단위에 정보를 저장하고 있습니다
 // DOM은 이러한 노드를 정의하고 그들 사이의 관계를 설명해 주는 역할을 합니다. 즉 노드는 모든 DOM 객체 입니다
 
-//  Element란?
+Element란?
 // Element란 특정 유형의 노드입니다(문서노드, 요소노드, 주석노드 등등..)
 // 태그를 선택
 
-// 4. DOM 이동 시 활용 가능한 프로퍼티
+4. DOM 이동 시 활용 가능한 프로퍼티
 // Element.children / 자식 요소 노드 / element의 자식 요소 모음(HTMLCollection)
 // Element.firstElementChild / 자식 요소 노드 / element의 첫 번째 자식 요소 하나
 // Element.lastElementChild / 자식 요소 노드 / elemnet의 마지막 자식 요소 하나
@@ -576,18 +583,18 @@ for (let tag of fields){
 // Node.previousSibling / 형제 노드 / node의 이전(previous) 혹은 좌측(left)에 있는 노드 하나
 // Node.nextSibling /  형제 노드 / node의 다음(next) 혹은 우측(right)에 있는 노드 하나
 
-// 5. 주요 요소 노드 프로퍼티
+5. 주요 요소 노드 프로퍼티
 // element.innerHTML / 요소 노드 내부의 HTML코드 문자열로 리턴 / 요소 안의 정보를 확인할 수도 있지만, 내부의 HTML 자체를 수정할 때 좀 더 자주 활용
 // element.outerHTML / 요소 노드 자체의 전체적인 HTML 코드를 문자열로 리턴 / outerHTML은 새로운 값을 할당하면 요소 자체가 교체되어 버리기 때문에 주의
 // element.textContent / 요소 노드 내부의 내용들 중에서 HTML을 제외하고 텍스트만 리턴 / textContent는 말 그대로 텍스트만 다루기 때문에 HTML태그를 쓰더라도 모두 텍스트로 처리
 
-// 6. 요소 노드 다루기
+6. 요소 노드 다루기
 // 01. 요소 노드 만들기: documnet.createElement('태그이름')
 // 02. 요소 노드 꾸미기: Element.textContent, element.innerHTML, ...
 // 03. 요소 노드 추가 혹은 이동하기: elemnet.prepend, element.append, element.after, element.before
 // 04. 요소 노드 삭제하기: element.remove()
 
-// 7. HTML 속성 다루기
+7. HTML 속성 다루기
 // 대부분의 HTML 속성은 DOM 객체의 프로퍼티로 변환 됨.
 // 하지만, 표준 속성이 아닌 경우에는 프로퍼티로 변환이 되질 않음. 
 // 아래 메소드를 활용하면 표준이 아닌 HTML 속성도 다룰 수 있음.
@@ -595,11 +602,11 @@ for (let tag of fields){
 // 02. 속성 추가(수정)하기: Element.setAttribute('속성', '값')
 // 03. 속성 제거하기: Element.removeAttribute('속성')
 
-// 8. 스타일 다루기
+8. 스타일 다루기
 // 자바스크립트로 태그의 스타일을 다루는 방법에는 크게 두 가지가 있음.
-// 01.style 프로퍼티 활용하기: Element.style.styleNme = 'value';
-// 02.class 변경을 통해 간접적으로 스타일 적용하기: Element.className, element.classList
-// 8-1 clssList의 유용한 메소드
+ 01.style 프로퍼티 활용하기: Element.style.styleNme = 'value';
+ 02.class 변경을 통해 간접적으로 스타일 적용하기: Element.className, element.classList
+8-1 clssList의 유용한 메소드
 // classList.add / 클래스 추가하기 / 여러 개의 값을 전달하면 여러 클랫 추가 기능
 // clssList.remove / 클래스 삭제하기 / 여러 개의 값을 전달하면 여러 클래스 삭제 가능
 // classList.toggle / 클래스 없으면 추가, 있으면 삭제 / 하나의 값만 적용 가능, 두번째 파라미터로 추가 or 삭제 기능을 강제할 수 있음.
@@ -607,11 +614,11 @@ for (let tag of fields){
 
 
 //** property 와 method 구분**//
-// 1. 의미로 구분하기
+1. 의미로 구분하기
 // property는 속성이라면, method는 행동입니다.
 // 예를 들어 listA라는 array가 있을 때, listA.length 는 property, listA.push(1)은 method.
 
-// 2. 사용법으로 구분하기
+2. 사용법으로 구분하기
 // javascript method는 함수로 된 property. 함수의 가장 큰 특징! 호출(callable)할 수있다는 것
 // 따라서 javascript 에서 괄호로 함수를 호출하므로, 대부분 괄호로 끝나면 method.
 // 없으면 property 라 보아도 무방함
@@ -657,18 +664,18 @@ btn.removeEventListener('click', event2);
 /**이벤트 등록하는 방법**/
 const toDoList = document.querySelector('#to-do-list');
 const items = toDoList.children;
-// 1.css 선택자(#to-do-list)로 태그 선택하기
-// 2.변수에 선택된 태그 담기
+1.css 선택자(#to-do-list)로 태그 선택하기
+2.변수에 선택된 태그 담기
 
 function updateToDo(event) {
 event.target.classList.toggle('done');
 }
-// 3. 이벤트 핸들러 선언(이벤트를 다루는) 핸들링
+3. 이벤트 핸들러 선언(이벤트를 다루는) 핸들링
 
 for (let item of items) {
   item.addEventListener('click', updateToDo)
 }
-// 4.반복문을 활용해서 각 li태그에 이벤트 핸들러를(clikc) 등록
+4.반복문을 활용해서 각 li태그에 이벤트 핸들러를(clikc) 등록
 
 event.target	이벤트가 발생한 요소
 event.currentTarget	이벤트 핸들러가 등록된 요소
@@ -708,9 +715,9 @@ for (let item of items) {
 }
 
 //***캡처링(captyring) (버블링과 반대로 내려가는 ) 실제로로 자주쓰이지 않음.
-// 캡처링 단계: 이벤트가 하위 요소로 전파되는 단계
-// 타깃 단계: 이벤트가 실제 타깃 요소에 전달되는 단계
-// 버블링 단계: 이벤트가 상위 요소로 전파되는 단계
+캡처링 단계: 이벤트가 하위 요소로 전파되는 단계
+타깃 단계: 이벤트가 실제 타깃 요소에 전달되는 단계
+버블링 단계: 이벤트가 상위 요소로 전파되는 단계
 <body>
   <div>DIV
     <ul>UL
@@ -919,3 +926,63 @@ scroll 이벤트는 보통 window 객체에 이벤트 핸들러를 등록하고 
 특히 scrollY 프로퍼티를 활용하면 스크롤된 특정한 위치를 기준으로 이벤트 핸들러가 동작하게 하거나
 혹은 스크롤 방향 (위로 스크롤 중인지 / 아래로 스크롤 중인지)을 기준으로 이벤트 핸들러가 동작하게끔 활용할 수 있음.
 
+*Object Literal '객체를 나타내는 문자열'
+중괄호를 쓰고 그안에 프로퍼티와 메소드를 나열하는 것은 자바스크립트에서 정식 명칭으로 Object Literal라고함.
+
+*** 1. Object literal과 Factory function 사용하기 ***
+function createUser(email, birthdate) {
+  const user = {
+    email,
+    birthdate,
+    buy(item) {
+      console.log(`${this.email} buys ${item.name}`);
+    },
+  };
+  return user;
+}
+
+const user1 = createUser('chris123@google.com', '19920321');
+const user2 = createUser('jerry99@google.com', '19950719');
+const user3 = createUser('alice@google.com', '19931224');
+//객체를 생성하는 Factory function을 만들고, 그 안에서 Object literal로 객체를 생성하여 리턴하는 방법입니다.
+
+
+
+*** 2. Constructor function 사용하기 ***
+fonction User(email, birthdate) {
+  this.email = email;
+  this.brithdate = birthdate;
+  this.buy = function (item) {
+    console.localStorage(`&{this.email} buys ${item.name}`);
+  };
+}
+
+const user1 = new User('chris123@google.com', '1992-03-21');
+const user2 = new User('jerry99@google.com', '1995-07-19');
+const user3 = new User('alice@google.com', '1993-12-24');
+//객체를 생성하는 용도로 사용하는 Constructor function을 정의하고,그 안에서 this 키워드를 사용하여 생성될 객체의 프로퍼티와 메소드를 설정하는 방법입니다.
+//Constructor function으로 객체를 생성하려면 그 앞에 new를 붙여서 실행해야 한다는 사실, 반드시 기억!!!
+
+
+
+*** 3. class 키워드 사용하기 ***
+class User {
+  contructor(email, birthdate) {
+    this.email = email;
+    this.birthdate = birthdate;
+  }
+  buy(item) {
+    console.localStorage(`&{this.email} buys ${item.name}`);
+  }
+}
+
+const user1 = new User('chris123@google.com', '1992-03-21');
+const user2 = new User('jerry99@google.com', '1995-07-19');
+const user3 = new User('alice@google.com', '1993-12-24');
+//class 키워드를 사용해서 객체의 틀을 정의하고, 마찬가지로 그 앞에 new를 붙여서 객체를 생성하는 방법입니다. class를 사용할 때는 보통 프로퍼티의 경우 constructor 안에 정의하고, 메소드의 경우 constructor 밖에 정의합니다.
+
+
+*!! 객체 지향 프로그래밍이 가능한 언어들은 크게 2가지 종류로 나눌 수 있는데요.
+첫 번째는 클래스 기반의 객체 지향 언어, 두 번째는 프로토타입 기반의 객체 지향 언어입니다.
+대표적인, 클래스 기반의 객체 지향 언어로는 Java가 있고, 대표적인 프로토타입 기반의 객체 지향 언어로는 지금 우리가 배우고 있는 JavaScript가 있는데
+코드잇에서는 클래스타입으로 진도를 나가고 나중에 심화과정에서는 프로토타입(Prototype) 따로 공부해야함!!!

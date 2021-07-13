@@ -1484,4 +1484,118 @@ export { title as printerTitle, print, printArr };
 
 
 *rototype이나 class, closure나 Execution Context와 같이 조금 더 복잡하거나 추상적인 영역의 개념은
-따로 검색하여 공부하기(코드잇 강의중에 내용이 없음)
+따로 검색하여 공부하기(코드잇 강의중에 내용이 없음) 
+
+
+
+@@@@@ 객체 지향 프로그래밍이란? @@@@@
+
+*객체 : 객체의 상태를 나타내는 '변수' / 객체의 행동을 나타내는 '함수'
+*객체안에 있는 변수들을 '프로퍼티'(콜론 뒤에 값) 함수들은 '메소드'
+*객체 지향 프로그래밍: 프로퍼티와 메소드로 이루어진 각 객체들의 상호 작용을 중심으로 코드를 작성하는 것.
+
+*Object Literal '객체를 나타내는 문자열'
+중괄호를 쓰고 그안에 프로퍼티와 메소드를 나열하는 것은 자바스크립트에서 정식 명칭으로 Object Literal라고함.
+
+*** 1. Object literal과 Factory function 사용하기 ***
+function createUser(email, birthdate) {
+  const user = {
+    email,
+    birthdate,
+    buy(item) {
+      console.log(`${this.email} buys ${item.name}`);
+    },
+  };
+  return user;
+}
+
+const user1 = createUser('chris123@google.com', '19920321');
+const user2 = createUser('jerry99@google.com', '19950719');
+const user3 = createUser('alice@google.com', '19931224');
+//객체를 생성하는 Factory function을 만들고, 그 안에서 Object literal로 객체를 생성하여 리턴하는 방법입니다.
+
+
+
+*** 2. Constructor function 사용하기 ***
+fonction User(email, birthdate) {
+  this.email = email;
+  this.brithdate = birthdate;
+  this.buy = function (item) {
+    console.localStorage(`&{this.email} buys ${item.name}`);
+  };
+}
+
+const user1 = new User('chris123@google.com', '1992-03-21');
+const user2 = new User('jerry99@google.com', '1995-07-19');
+const user3 = new User('alice@google.com', '1993-12-24');
+//객체를 생성하는 용도로 사용하는 Constructor function을 정의하고,그 안에서 this 키워드를 사용하여 생성될 객체의 프로퍼티와 메소드를 설정하는 방법입니다.
+//Constructor function으로 객체를 생성하려면 그 앞에 new를 붙여서 실행해야 한다는 사실, 반드시 기억!!!
+
+
+
+*** 3. class 키워드 사용하기 ***
+class User {
+  contructor(email, birthdate) {
+    this.email = email;
+    this.birthdate = birthdate;
+  }
+  buy(item) {
+    console.localStorage(`&{this.email} buys ${item.name}`);
+  }
+}
+
+const user1 = new User('chris123@google.com', '1992-03-21');
+const user2 = new User('jerry99@google.com', '1995-07-19');
+const user3 = new User('alice@google.com', '1993-12-24');
+//class 키워드를 사용해서 객체의 틀을 정의하고, 마찬가지로 그 앞에 new를 붙여서 객체를 생성하는 방법입니다. class를 사용할 때는 보통 프로퍼티의 경우 constructor 안에 정의하고, 메소드의 경우 constructor 밖에 정의합니다.
+
+
+*!! 객체 지향 프로그래밍이 가능한 언어들은 크게 2가지 종류로 나눌 수 있는데요.
+첫 번째는 클래스 기반의 객체 지향 언어, 두 번째는 프로토타입 기반의 객체 지향 언어입니다.
+대표적인, 클래스 기반의 객체 지향 언어로는 Java가 있고, 대표적인 프로토타입 기반의 객체 지향 언어로는 지금 우리가 배우고 있는 JavaScript가 있는데
+코드잇에서는 클래스타입으로 진도를 나가고 나중에 심화과정에서는 프로토타입(Prototype) 따로 공부해야함!!!
+
+
+
+
+
+@@@ 기타 궁금증 @@@=======================================================
+* 객체 리터럴에 의한 객체 생성
+객체 리터럴은 중괄호({...}) 내에 0개 이상의 프로퍼티를 정의함
+자바스크립트 엔진은 객체 리터럴을 해석해 객체를 생성
+
+var person {
+name: 'Lee',
+sayHello: function() {
+console.log(`Hello! My name is ${this.name}.`);
+}
+
+};
+
+console.log(typeof person); // object
+console.log(person); // {name: "Lee", sayHello: f}
+
+중괄호 내에 프로퍼티를 정의하지 않으면 빈 객체가 생성
+var empty = {}; // 빈 객체
+console.log(typeof empty); // object
+
+
+*프로퍼티 접근
+1.점 표기법 = console.log(person.firstName);		
+2.대괄호 표기법 = console.log(person['firstName']); ////대괄호 표기법을 사용할 경우 프로퍼티 키는 반드시 따옴표로 감싼 문자열이어야 한다.
+
+=======================================================================
+
+
+*객체 지향 프로그래밍 핵심 개념 4가지 기둥
+1.추상화
+2.캡슐화
+3.상속
+4.다형성
+
+@@@@@ 추상화 @@@@@
+*어떤 구체적인 존재를 원하는 방향으로 간략화해서 나타내는 것 
+*클래스, 프로퍼티, 메소드 이름을 잘 이해할 수 있도록 정하는게 중요, 이것만으로 부족하다고 느껴질 때, 주석을 달거나 별도의 설명 문서를 남겨야 함.
+
+@@@@@ 캡슐화 @@@@@
+*객체의 특정 프로퍼티에 직접 접근하지 못하도록 막는 것
