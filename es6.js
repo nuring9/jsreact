@@ -1593,9 +1593,129 @@ console.log(typeof empty); // object
 3.상속
 4.다형성
 
-@@@@@ 추상화 @@@@@
+@@@@@ 추상화 (Abstraction) @@@@@
 *어떤 구체적인 존재를 원하는 방향으로 간략화해서 나타내는 것 
 *클래스, 프로퍼티, 메소드 이름을 잘 이해할 수 있도록 정하는게 중요, 이것만으로 부족하다고 느껴질 때, 주석을 달거나 별도의 설명 문서를 남겨야 함.
+class User {
+  constructor(email, birthdate) {
+    // 사용자의 이메일 주소
+    this.email = email;
+    // 사용자의 생일
+    this.birthdate = birthdate;
+  }
 
-@@@@@ 캡슐화 @@@@@
-*객체의 특정 프로퍼티에 직접 접근하지 못하도록 막는 것
+  // 물건 구매하기
+  buy(item) {
+    console.log(`${this.email} buys ${item.name}`);
+  }
+}
+
+
+@@@@@ 캡슐화 (Encapsulation) @@@@@
+*객체 외부에서 함부로 접근하면 안되는 프로퍼티나 메소드에 직접 접근할 수 없도록 하고, 필요한 경우 공개된 다른 메소드를 통해서만 접근할 수 있도록 하는 것을 의미
+calss User { //변수이름을 앞에는 무조껀 대문자로 지정
+  constructor(email, birthdate) {
+    this.email = email;
+    this.birthdate = birthdate;
+  }
+  buy(item) {
+    console.log(`${this.email} buys ${item.name}`);
+  }
+  get email(address) {
+ return this._email;    
+  }
+  set email(address) {
+    if (address.includes(`@`)) {
+      this._email = address;
+    }else{
+      throw new Error('invalid email address');
+    }
+  }
+}
+
+const user1 = new User('charlie123@google.com', '2000-12-05');
+
+console.log(user1.email); //email이라는 getter 메소드 실행
+user1.emil = 'new123@google.com'; //email이라는 setter 메소드 실행
+//사용자의 이메일 주소를 나타내는 프로퍼티는 사실 _email 이고, 그 getter/setter 메소드의 이름이 email입니다. 그래서 마치 email 프로퍼티에 접근하는 것 같은 코드를 작성하더라도
+//사실은 email이라는 getter 메소드 또는 setter 메소드가 실행,
+console.log(user1._email);
+//이런 식으로 보호받는 변수에 직접 접근할 수 있기 때문에 완벽한 캡슐화는 아님.
+
+@@@@@ 상속 (Inheritance) @@@@@ 
+상속은 부모 클래스의 프로퍼티와 메소드를 자식 클래스가 그대로 물려받는 것
+상속을 적용하면 똑같은 코드를 또다시 작성하지 않아도 됨. 즉, '코드의 재사용성(reusability)'이 좋아집니다.
+필요한 경우에는 자식 클래스에서 부모 클래스와 동일한 이름의 메소드를 재정의(오버라이딩, overriding)할 수도 있음
+calss User {
+  constructor(email, birthdate) {
+    this.email = email;
+    this.birthdate = birthdate;
+  }
+
+  buy(tiem){
+    console.log(`${this.email} buys ${item.name}`);
+  }
+}
+
+class PremiumUser extends User {  // exteds를 사용하여 User객체를 상속
+  constructor(email, birthdate, level) { // PremiumUser 클래스가 User 클래스에 있는 email, birthdate 프로퍼티와 buy 메소드를 그대로 물려받고 있음 
+    super(email, birthdate); //상속받을땐 꼭 super메소드를 사용 해야함.
+    this.level = level;
+  }
+  streamMusicForFree(){
+    console.log(`Free music streaming for ${this.email}`); 
+  }
+}
+
+
+@@@@@ 다형성 (Polymorphism) @@@@@ 
+다형성은 하나의 변수가 다양한 종류의 클래스로 만든 여러 객체를 가리킬 수 있음.
+class User {
+  constructor(email, birthdate) {
+    this.email = email;
+    this.birthdate = birthdate;
+  }
+
+  buy(item) {
+    console.log(`${this.email} buys ${item.name}`);
+  }
+}
+
+class PremiumUser extends User {
+  constructor(email, birthdate, level) {
+    super(email, birthdate);
+    this.level = level;
+  }
+
+  buy(item) {
+    console.log(`${this.email} buys ${item.name} with a 5% discount`)
+  }
+  streamMusicForFree() {
+    console.log(`Free music streaming for ${this.email}`);
+  }
+}
+
+const item = {
+  name: '스웨터',
+  price: 30000,
+};
+
+const user1 = new User('chris123@google.com', '19920321');
+const user2 = new User('rachel@google.com', '19880516');
+const user3 = new User('brian@google.com', '20051125');
+const pUser1 = new PremiumUser('niceguy@google.com', '19891207', 3);
+const pUser2 = new PremiumUser('helloMike@google.com', '19900915', 2);
+const pUser3 = new PremiumUser('aliceKim@google.com', '20010722', 5);
+
+cosnt users = [user1, pUser1, user2, pUser2, user3, pUser3];
+
+users.forEach((user)=> {
+  user.buy(item);
+});
+// forEach 문 안의 user는 User 클래스로 만든 객체를 가리킬 때도 있고, PremiumUser 클래스로 만든 객체를 가리킬 때도 있음. 매번 user 객체의 buy 메소드가 호출된다는 점은 같지만
+//구체적으로 무슨 클래스로 만든 객체의 buy 메소드가 호출되느냐에 따라 결과가 달라지는데, 이렇게 단순한 코드로 다양한 결과를 낼 수 있는 건 다형성 덕분.
+
+***** 사실 개발 실무에서는 이런 식으로 여러 개의 클래스를 하나의 파일에 정의하기보다는 파일 하나당 클래스 하나를 정의해두고 이를 메인 코드에서 가져와 사용
+User.js / PremiumUser.js / main.js 
+//위의 예시 코드 참고로 3개로 분리 후 각 클래스와 메인 로직(main.js)을 파일별로 쪼개서 작성
+이를 외부에 공개해서 사용할 수 있도록 하는 방식을 주로 활용
