@@ -1495,46 +1495,53 @@ export { title as printerTitle, print, printArr };
 *객체 지향 프로그래밍: 프로퍼티와 메소드로 이루어진 각 객체들의 상호 작용을 중심으로 코드를 작성하는 것.
 
 *Object Literal '객체를 나타내는 문자열'
-중괄호를 쓰고 그안에 프로퍼티와 메소드를 나열하는 것은 자바스크립트에서 정식 명칭으로 Object Literal라고함.
+{} 중괄호를 쓰고 그안에 프로퍼티와 메소드를 나열하는 것은 자바스크립트에서 정식 명칭으로 Object Literal라고함.
 
-*** 1. Object literal과 Factory function 사용하기 ***
+
+
+*** 1. Factory functionn ***
 function createUser(email, birthdate) {
   const user = {
-    email,
-    birthdate,
+    email,      //email: email, 을 간결하게 줄여서 사용
+    birthdate,  //birthdate: birthdate, 을 간결하게 줄여서 사용
     buy(item) {
       console.log(`${this.email} buys ${item.name}`);
     },
   };
   return user;
 }
+//createUser함수를 정의하고, email, birthdate 파라미터를 둔 
+//함수안에서는 Object literal를 생성하고  email, birthdate로 전달받은 값을 그대로 똑같은 이름의 프로퍼티값으로 대입,
+//마지막으로 생성한 user객체를 그대로 리턴하고 있음.
 
 const user1 = createUser('chris123@google.com', '19920321');
 const user2 = createUser('jerry99@google.com', '19950719');
 const user3 = createUser('alice@google.com', '19931224');
-//객체를 생성하는 Factory function을 만들고, 그 안에서 Object literal로 객체를 생성하여 리턴하는 방법입니다.
+//createUser 함수를 사용하여 user1 객체를 생성
+
 
 
 
 *** 2. Constructor function 사용하기 ***
-fonction User(email, birthdate) {
+fonction User(email, birthdate) { //객체를 만들기 위한 이름이 대문자로 시작해야 함. (물론 소문자도 가능하지만, 관습)
   this.email = email;
   this.brithdate = birthdate;
-  this.buy = function (item) {
-    console.localStorage(`&{this.email} buys ${item.name}`);
+  this.buy = function (item) { 
+    console.localStorage(`&{this.email} buys ${item.name}`); //this 키워드가 Constructor function 생성할 수 있는 해덩 객체를 의미
+    //this가 생성된 user1을 가리킴
   };
-}
+} //일반 함수와 달리 객체를 생성할 수 있는 함수, 자바스크립트에서는 함수를 사용하여 객체를 생성할 수 있고, 이런 함수를 Constructor function 라고 함.
 
 const user1 = new User('chris123@google.com', '1992-03-21');
 const user2 = new User('jerry99@google.com', '1995-07-19');
 const user3 = new User('alice@google.com', '1993-12-24');
-//객체를 생성하는 용도로 사용하는 Constructor function을 정의하고,그 안에서 this 키워드를 사용하여 생성될 객체의 프로퍼티와 메소드를 설정하는 방법입니다.
+//this 키워드를 사용하여 생성될 객체의 프로퍼티와 메소드를 설정하는 방법입니다.
 //Constructor function으로 객체를 생성하려면 그 앞에 new를 붙여서 실행해야 한다는 사실, 반드시 기억!!!
 
 
 
-*** 3. class 키워드 사용하기 ***
-class User {
+*** 3. class 키워드 사용하기 *** es6부터
+class User {  //fonction을 생략하고 class를 사용
   contructor(email, birthdate) {
     this.email = email;
     this.birthdate = birthdate;
@@ -1547,7 +1554,8 @@ class User {
 const user1 = new User('chris123@google.com', '1992-03-21');
 const user2 = new User('jerry99@google.com', '1995-07-19');
 const user3 = new User('alice@google.com', '1993-12-24');
-//class 키워드를 사용해서 객체의 틀을 정의하고, 마찬가지로 그 앞에 new를 붙여서 객체를 생성하는 방법입니다. class를 사용할 때는 보통 프로퍼티의 경우 constructor 안에 정의하고, 메소드의 경우 constructor 밖에 정의합니다.
+//class 키워드를 사용해서 객체의 틀을 정의하고, 마찬가지로 그 앞에 new를 붙여서 객체를 생성하는 방법입니다.
+//class를 사용할 때는 보통 프로퍼티의 경우 constructor 안에 정의하고, 메소드의 경우 constructor 밖에 정의합니다.
 
 
 *!! 객체 지향 프로그래밍이 가능한 언어들은 크게 2가지 종류로 나눌 수 있는데요.
@@ -1613,6 +1621,8 @@ class User {
 
 @@@@@ 캡슐화 (Encapsulation) @@@@@
 *객체 외부에서 함부로 접근하면 안되는 프로퍼티나 메소드에 직접 접근할 수 없도록 하고, 필요한 경우 공개된 다른 메소드를 통해서만 접근할 수 있도록 하는 것을 의미
+
+
 calss User { //변수이름을 앞에는 무조껀 대문자로 지정
   constructor(email, birthdate) {
     this.email = email;
@@ -1621,12 +1631,12 @@ calss User { //변수이름을 앞에는 무조껀 대문자로 지정
   buy(item) {
     console.log(`${this.email} buys ${item.name}`);
   }
-  get email(address) {
+  get email(address) { //getter 메소드 생성 프로퍼티의 값을 읽는 용도.
  return this._email;    
   }
-  set email(address) {
+  set email(address) {  //setter 메소드 생성
     if (address.includes(`@`)) {
-      this._email = address;
+      this._email = address; // 새롭게 생긴 프로퍼티, 프로그래밍에선 숨기고자 하는 이름 맨 앞에 언더바를 씀. 
     }else{
       throw new Error('invalid email address');
     }
@@ -1642,9 +1652,62 @@ user1.emil = 'new123@google.com'; //email이라는 setter 메소드 실행
 console.log(user1._email);
 //이런 식으로 보호받는 변수에 직접 접근할 수 있기 때문에 완벽한 캡슐화는 아님.
 
+
+
+********* 캡슐화 더 알아보기 **********
+사실 setter, getter 메소드를 사용하더라도 완벽한 캡슐화가 아님
+console.log(user1._email);
+user1._email = 'chris robert'; //setter,getter의 프로퍼티(_email)로 직접 접근가능
+
+
+1. 클로저 (Closure) 를 사용하면 우회적으로 완벽한 캡슐화를 사용할 수 있음.
+사실 자바스크립트로 프로그래밍을 할 때 캡슐화가 얼마나 중요한지, 꼭 해야하는지에 관해서는 논란이 많습니다. 하지만 어떤 상황이든 이런 식으로 완벽하게 캡슐화를 할 수 있다 정도는 알아두는 게 좋음.
+
+function createUser(email, birthdate) {
+  let _email = email; 
+
+  const user = {
+    birthdate,
+
+    get email() {
+      return _email;
+    },
+
+    set email(address) {
+      if (address.includes('@')) {
+        _email = address;
+      } else {
+        throw new Error('invalid email address');
+      }
+    },
+  };
+
+  return user;
+}
+//createUser라고 하는 Factory function에 생성하려는 user 객체 안에 _email 프로퍼티가 있는 게 아니라,
+//(1) createUser 함수 안에, (2) 그리고 user 객체 바깥에 _email이라는 변수가 있음.
+//대신에 user 객체 안에는 _email 변수의 값을 읽고 쓸 수 있는 email이라는 getter/setter 메소드가 있음.
+
+const user1 = createUser('chris123@google.com', '19920321');
+console.log(user1.email);
+//마지막 부분에서 createUser라는 Factory function으로 user1이라는 객체를 생성하고, user1 객체의 email getter 메소드를 호출
+//chris123@google.com이 출력 됨.
+
+클로저(Closure)란 자바스크립트에서 어떤 함수와 그 함수가 참조할 수 있는 값들로 이루어진 환경을 하나로 묶은 것을 의미
+예를 들어, createUser 함수가 실행되는 시점에 email이라는 getter/setter 메소드는 _email이라는 변수의 값에 접근할 수 있는 상태. email getter/setter 메소들은
+메소드를 갖고 있는 객체가 리턴된 이후더라도 여전히 _email에 접근하는것이 가능!
+함수가 정의된 당시에 참조할 수 있었떤 변수들을 계쏙 참조할 수 있는 상태의 함수를 클로저라고 함.
+
+보통 다른 프로그래밍 언어였다면 createUser 함수 내부가 실행될 때만 email getter/setter 메소드가 _email 변수에 접근할 수 있었겠지만, 자바스크립트에서는 클로저라는 개념으로 해당 환경을 함수와 함께 그대로 유지시켜주는 것입니다.
+
+2. 메소드도 캡슐화할 수 있음.//코드잇 강의에서 이해 불가..시간날때 다시 한번 보기
+
+
+
+
 @@@@@ 상속 (Inheritance) @@@@@ 
 상속은 부모 클래스의 프로퍼티와 메소드를 자식 클래스가 그대로 물려받는 것
-상속을 적용하면 똑같은 코드를 또다시 작성하지 않아도 됨. 즉, '코드의 재사용성(reusability)'이 좋아집니다.
+상속을 적용하면 *똑같은 코드를 또다시 작성하지 않아도 됨.* 즉, '코드의 재사용성(reusability)'이 좋아집니다.
 필요한 경우에는 자식 클래스에서 부모 클래스와 동일한 이름의 메소드를 재정의(오버라이딩, overriding)할 수도 있음
 calss User {
   constructor(email, birthdate) {
@@ -1659,16 +1722,19 @@ calss User {
 
 class PremiumUser extends User {  // exteds를 사용하여 User객체를 상속
   constructor(email, birthdate, level) { // PremiumUser 클래스가 User 클래스에 있는 email, birthdate 프로퍼티와 buy 메소드를 그대로 물려받고 있음 
-    super(email, birthdate); //상속받을땐 꼭 super메소드를 사용 해야함.
+    super(email, birthdate); //상속받을땐 super생성자를 꼭 사용 해야함. 부모 class의 constructor 와 같은 형식으로 값을 작성
     this.level = level;
   }
   streamMusicForFree(){
-    console.log(`Free music streaming for ${this.email}`); 
+    console.log(`Free music streaming for ${this.email}`); //  User,PremiumUser 의 class를 사용
   }
 }
+//자식 클래스로 객체를 만들려고 할 때 반드시 그 생성자 안에서 super를 호출해서 부모 클래스의 생성자 함수를 먼저 호출해줘야 함
 
 
-@@@@@ 다형성 (Polymorphism) @@@@@ 
+
+
+@@@@@ 다형성 (Polymorphism) @@@@@ 많은 형태를 갖고 있는 성질
 다형성은 하나의 변수가 다양한 종류의 클래스로 만든 여러 객체를 가리킬 수 있음.
 class User {
   constructor(email, birthdate) {
@@ -1688,8 +1754,8 @@ class PremiumUser extends User {
   }
 
   buy(item) {
-    console.log(`${this.email} buys ${item.name} with a 5% discount`)
-  }
+    console.log(`${this.email} buys ${item.name} with a 5% discount`); //자식 클래스에서 부모 클래스와 동일한 메소드를 정의하고 그 내용을 다르게 채워넣는걸 오버라이딩(overriding)이라고 함.(덮어쓰다)
+  } //원래 정의되어 있던 부모 클래스에 메소드들을 덮어쓴다고 보면 됨.
   streamMusicForFree() {
     console.log(`Free music streaming for ${this.email}`);
   }
@@ -1700,20 +1766,114 @@ const item = {
   price: 30000,
 };
 
-const user1 = new User('chris123@google.com', '19920321');
-const user2 = new User('rachel@google.com', '19880516');
+const user1 = new User('chris123@google.com', '19920321');             //chris123@google.com buys 스웨터
+const user2 = new User('rachel@google.com', '19880516');      
 const user3 = new User('brian@google.com', '20051125');
-const pUser1 = new PremiumUser('niceguy@google.com', '19891207', 3);
+
+const pUser1 = new PremiumUser('tommy@google.com', '19891207', 3);     //tommy@google.com buys 스웨터 with a 5% discount
 const pUser2 = new PremiumUser('helloMike@google.com', '19900915', 2);
 const pUser3 = new PremiumUser('aliceKim@google.com', '20010722', 5);
 
 cosnt users = [user1, pUser1, user2, pUser2, user3, pUser3];
 
 users.forEach((user)=> {
-  user.buy(item);
-});
-// forEach 문 안의 user는 User 클래스로 만든 객체를 가리킬 때도 있고, PremiumUser 클래스로 만든 객체를 가리킬 때도 있음. 매번 user 객체의 buy 메소드가 호출된다는 점은 같지만
-//구체적으로 무슨 클래스로 만든 객체의 buy 메소드가 호출되느냐에 따라 결과가 달라지는데, 이렇게 단순한 코드로 다양한 결과를 낼 수 있는 건 다형성 덕분.
+  user.buy(item);  // forEach 문 안의 user는 User 클래스로 만든 객체를 가리킬 때도 있고, PremiumUser 클래스로 만든 객체를 가리킬 때도 있음. 이렇게 하나의 변수가 다양한 종류의 객체를 가르킬 수 있는걸 다형성이라고 함.
+});                // buy 메소드를 오버라이딩하고 하나의 user 변수로 호출함
+매번 user 객체의 buy 메소드가 호출된다는 점은 같지만 구체적으로 무슨 클래스로 만든 객체의 buy 메소드가 호출되느냐에 따라 결과가 달라지는데, 이렇게 단순한 코드로 다양한 결과를 낼 수 있는 건 다형성 덕분.
+보통 자식클래스에서 부모클래스를 메소드를 오버라이딩하고 그 후에 다형성을 활용하는 경우가 많음
+
+
+
+
+******** 부모 클래스의 메소드가 필요하다면 ********
+class User {
+  constructor(email, birthdate) {
+    this.email = email;
+    this.birthdate = birthdate;
+  }
+
+  buy(item) {
+    console.log(`${this.email} buys ${item.name}`);
+  }
+}
+
+class PremiumUser extends User {
+  constructor(email, birthdate, level, point) {
+    super(email, birthdate);
+    this.level = level;
+    this.point = point;
+  }
+
+  buy(item) {
+    super.buy(item);   // 부모클래스의 일반 메소드를 가져옴 console.log(`${this.email} buys ${item.name}`) ;
+    this.point += item.price * 0.05;
+  } 
+  streamMusicForFree() {
+    console.log(`Free music streaming for ${this.email}`);
+  }
+}
+// super 부모클래스의 생성자 함수뿐만 아니라 일반메소드를 호출 하고 싶을때에도 super 키워드를 사용할 수 있음.
+
+
+
+
+@@@@@ instanceof 연산자 @@@@@@
+다형성을 사용할 때 현재 변수가 가르키는 객체가 정확히 어느 클래스가 만든 객체인지 확인하고 싶을때 'instanceof 연산자' 를 사용
+const user1 = new User('chris123@google.com', '19920321');           false   
+const user2 = new User('rachel@google.com', '19880516');             false
+const user3 = new User('brian@google.com', '20051125');              false
+
+const pUser1 = new PremiumUser('tommy@google.com', '19891207', 3);       true
+const pUser2 = new PremiumUser('helloMike@google.com', '19900915', 2);   true
+const pUser3 = new PremiumUser('aliceKim@google.com', '20010722', 5);    true
+
+cosnt users = [user1, pUser1, user2, pUser2, user3, pUser3];
+
+users.forEach((user)=> {
+  console.log(user instanceof PremiumUser);  //반복되는 user객체가 PremiumUser로 만든 객체인지 확인
+});                
+
+user객체로 만든건 false, PremiumUser 객체가 만든건 true로 출력됨.
+
+users.forEach((user)=> {
+  console.log(user instanceof user);  //총 6개의 true를 출력함. user객체를 상속한 PremiumUser 객체이기 때문
+});                
+
+
+
+@@@@@@ static 프로퍼티와 static 메소드 @@@@@@ //클레스에 직접적으로 딸려있는 프로퍼티와 메스드
+객체가 아닌 클래스 자체로 접근하고 싶을 때 사용
+class Math {
+  static PI = 3.14;
+
+  static getCircleArea(radius) {
+    return Math.PI * radius * radius;
+  }
+}
+
+생성자 함수인 constructor 정의되어 있지 않고, 생설 될 객체를 나타내는 this 키워드도 없음
+static PI = 원주율 pi,  static getCircleArea = 원의 넓이를 구하는 메소드 임
+static 을 붙이면 class로 객체를 생성하지 않아도 프로퍼티(PI)와 메소드(getCircleArea)를 사용할 수 있음
+
+Math 클래스는 객체를 생성하려고 정의한 클래스가 아님
+수학관련 함수를 사용하기 위해서 정의한 클래스고, 앞으로 이런 수학계산이 필요한 모든 프로퍼티와 메소드들은 Math 안에 정의 함.
+
+
+Math.PI = 3.141592;
+Math.getRectangleArea = function (width, height){
+  return width * height;
+} //기존값을 수정하거나 새로운것을 추가하는것도 가능함 (class 바깥에 작성)
+
+
+console.log(Math.PI);
+console.log(Math.getCircleArea(5)); 
+//클래스 이름으로 바로 접근할 수 있음
+
+*****자바스크립트 내장객체에서도 static프로퍼티나 static메소드가 있음.  (date 내장객체에도 있음)
+*****이렇게 class에는 class로 만든 객체로 접근해서 사용할 일반적인 프로퍼티와 메소드 말고도, 클래스 그 자체에 딸려있는 static 프로퍼티와 static 메소드도 있음.
+
+
+
 
 ***** 사실 개발 실무에서는 이런 식으로 여러 개의 클래스를 하나의 파일에 정의하기보다는 파일 하나당 클래스 하나를 정의해두고 이를 메인 코드에서 가져와 사용
 User.js / PremiumUser.js / main.js 
