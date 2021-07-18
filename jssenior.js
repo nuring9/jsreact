@@ -136,3 +136,143 @@ fetch('https://jsonplaceholder.typicode.com/users')
 JSON.parse
 *JSON객체의 parse메소드를 사용하면 스트링 타입의 JSON 데이터를 자바스크립트로 변환할 수 있음.
 
+**[코드잇] 토픽 데이터 처리하기 문제**
+fetch('https://learn.codeit.kr/api/topics')
+  .then((response) => response.text())
+  .then((result) => {
+    const topics = JSON.parse(result); // JSON이라는 객체의 parse 메소드를 사용하여 변환 Deserialization, 우리말로는 역직렬화
+    const beginnerLevelTopics = topics.filter((topic) => topic.difficulty === '초급'); //topics 배열의 filter 메소드를 사용해서 각 요소의 difficulty 프로퍼티(토픽의 난이도) 값이 '초급'에 해당하는 것들만 추출해서 만든 새로운 배열을 리턴
+    console.log(beginnerLevelTopics); //초급 토픽들로 이루어진 배열을 출력하
+  });
+
+
+
+
+  @메소드의 의미
+  요청(Request)        /         메소드(Method)
+  기존 데이터를 조회하는 리퀘스트 - GET
+  새 데이터를 추가하는 리퀘스트   - POST
+  기존 데이터를 수정하는 리퀘스트 - PUT
+  기존 데이터를 삭제하는 리퀘스트 - DELETE
+
+  Request
+  Head / Request에 대한 부가정보 = 메소드(method)
+  Body / 실제 데이터를 담는 부분
+  
+  POST, PUT = request Head,Body
+  GET, DELETE = request Head
+
+
+
+
+  *****학습용 URL : https://learn.codeit.kr/api/members****
+(1) 전체 직원 정보 조회 - GET 
+(2) 특정 직원 정보 조회 - GET 
+(3) 새 직원 정보 추가 - POST
+(4) 기존 직원 정보 수정 - PUT
+(5) 기존 직원 정보 삭제 - DELETE
+
+위의 5가지 작업 중
+(2) 특정 직원 정보 조회 - GET
+(4) 기존 직원 정보 수정 - PUT
+(5) 기존 직원 정보 삭제 - DELETE
+이 작업들을 수행할 때는 작업의 대상이 되는 직원 정보를 특정할 수 있도록 URL 끝에 아래와 같은 고유 식별자를 붙여줘야 합니다. (직원의 id 값입니다.)
+https://learn.codeit.kr/api/members/3  //3번 직원 정보에 대한 작업을 수행하겠다는 뜻.
+
+나머지 작업인
+(1) 전체 직원 정보 조회 - GET 
+(3) 새 직원 정보 추가 - POST
+특정 직원 정보를 대상으로 수행하는 작업이 아니라 아니라 전체 직원 정보에 대해서 수행하는 작업이기 때문에
+https://learn.codeit.kr/api/members  ///members로 끝나는 원래의 URL을 그대로 사용
+
+
+
+(1) 전체 직원 정보 조회 - GET 
+fetch('https://learn.codeit.kr/api/members') 
+ .then((response) => response.text())
+ .then((result) => {console.log(result); });
+
+
+
+(2) 특정 직원 정보 조회 - GET 
+ fetch('https://learn.codeit.kr/api/members/3')   //url의 끝에 3(특정직원의 id값)
+  .then((response) => response.text())
+  .then((result) => {console.log(result); });
+ 
+
+
+(3) 새 직원 정보 추가  - POST
+ const newMember = {
+   name: 'Jerry',
+   email: 'jerry@codeitmall.kr',
+   department: 'engineering',
+ };
+
+ fetch('https://learn.codeit.kr/api/members', {
+   method: 'POST',                      //추가 POST
+   body: JSON.stringify(newMember),     //자바스크립트객체를 string타입의 JSON데이터로 변환
+ })
+   .then((response) => response.text())
+   .then((result) => { console.log(result); });
+
+
+
+(4) 기존 직원 정보 수정 - PUT
+const member = {
+  name: 'Alice',
+  email: 'alice@codeitmall.kr',
+  department: 'marketing',   //수정할 부분만 수정
+};
+
+fetch('https://learn.codeit.kr/api/members/2', {   //수정할 ID값 입력
+  method: 'PUT',                      //수정 PUT
+  body: JSON.stringify(member),    //자바스크립트 객체의 데이터를 바디에 담아서 외부로 전송하려면, 반드시 자바스크립트객체를 string타입의 JSON데이터로 변환
+})
+  .then((response) => response.text())
+  .then((result) => { console.log(result); });
+
+
+
+(5) 기존 직원 정보 삭제 - DELETE  
+fetch('https://learn.codeit.kr/api/members/2', {  //ID 2번 삭제
+  method: 'DELETE',      //삭제
+}) 
+  .then((response) => response.text())
+  .then((result) => {console.log(result); });
+
+
+
+1.자바스크립트 객체를 string 타입의 JSON 데이터로 변환하는 작업(리퀘스트 보낼 때) Serialization(직렬화)
+2.string 타입의 JSON 데이터를 자바스크립트 객체로 변환하는 작업(리스폰스를 받았을 때) Deserialization(역직렬화)
+
+
+@@@@@ 모범적인 Web API, REST API @@@@@
+1. Web API
+사용자가 직접 서비스 화면을 보는 웹 페이지나 앱 등을 만드는 프론트엔드(Front-end) 개발자, 웹 브라우저나 앱이 보내는 리퀘스트를 받아서 적절한 처리를 한 후 리스폰스를 주는 서버의 프로그램을 만드는 백엔드(Back-end) 개발자
+API = API란 Application Programming Interface의 약자로, 원래는 '개발할 때 사용할 수 있도록 특정 라이브러리나 플랫폼 등이 제공하는 데이터나 함수 등'을 의미
+Web API = 웹 개발에서는 어느 URL로 어떤 리퀘스트를 보냈을 때, 무슨 처리가 수행되고 어떤 리스폰스가 오는지에 관해 미리 정해진 규격
+
+2. REST API 이야기
+REST API = 오늘날 많은 웹 개발자들이 Web API 설계를 할 때, 준수하기 위해 노력하는 일종의 가이드라인
+REST architecture = 웹이 갖추어야 할 이상적인 아키텍처(구조)로 REST architecture라는 개념을 제시
+REST = Representational State Transfer(표현적인 상태 이전)의 줄임말로, 해석하면 '표현적인, 상태 이전'이라는 뜻
+
+*** REST architecture가 되기 위한 조건 6가지
+1.Client-Server
+2.Stateless
+3.Cache
+4.Uniform Interface
+5.Layered System
+6.Code on Demand
+
+* 조건 4. Uniform Interface의 하위 조건인 (4-1) identificaton of resources 에 관해서 특히 개발자들이 강조하는 규칙, 2가지
+1. URL은 리소스를 나타내기 위해서만 사용하고, 리소스에 대한 처리는 메소드로 표현해야 합니다.
+(01) 'https://learn.codeit.kr/api/members' URL로   
+(02) 리퀘스트의 헤드에 POST 메소드를 설정하고,
+(03) 리퀘스트의 바디에 새 직원 정보를 넣어서 보내면 된다.
+
+2. 도큐먼트는 단수 명사로, 컬렉션은 복수 명사로 표시합니다.
+https://www.soccer.com/europe/teams/manchester-united/players/pogba
+URL의 path 부분을 보면 '유럽의', '축구팀들 중에서', '맨체스터 유나이티드 팀의', '선수들 중에서', '포그바'라는 선수의 정보를 의미하는 리소스
+도큐먼트는 하나의 '파일', 컬렉션은 여러 '파일'들을 담을 수 있는 하나의 '디렉토리'에 해당하는 개념
+europe, manchester-united, pogba가 '도큐먼트'에 해당하고, teams, players가 '컬렉션'에 해당
