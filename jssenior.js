@@ -276,3 +276,325 @@ https://www.soccer.com/europe/teams/manchester-united/players/pogba
 URL의 path 부분을 보면 '유럽의', '축구팀들 중에서', '맨체스터 유나이티드 팀의', '선수들 중에서', '포그바'라는 선수의 정보를 의미하는 리소스
 도큐먼트는 하나의 '파일', 컬렉션은 여러 '파일'들을 담을 수 있는 하나의 '디렉토리'에 해당하는 개념
 europe, manchester-united, pogba가 '도큐먼트'에 해당하고, teams, players가 '컬렉션'에 해당
+
+
+================= text 메소드 말고 json 메소드도 있어요. =================
+fetch('https://jsonplaceholder.typicode.com/users')
+ .then((response) => response.text())    // 리스폰스의 내용을 추출하기 위해 response.text()를 호출
+ .then((result) => { const users = JSON.parseFloat(result); });   //리턴값인 JSON 데이터를 Deserialize해서 생성한 객체를 users에 할당
+
+
+ fetch('https://jsonplaceholder.typicode.com/users')
+  .then((response) => response.json())  // text 메소드 대신 json이라는 메소드를 사용
+  .then((result) => { const users = result; });  //콜백 안에 있던 JSON.parse 코드를 삭제
+  response 객체의 text 메소드 대신 json이라는 메소드를 호출하면, 리스폰스의 내용이 JSON 데이터에 해당하는 경우, 바로 Deserialization까지 수행
+  이렇게 json 메소드를 사용하면, 두 번째 콜백의 result 파라미터로는 Deserialization 결과로 생성된 자바스크립트 객체가 넘어가게 됨.
+  참고로, 리스폰스의 내용이 JSON 데이터에 해당하지 않을 경우에는 에러가 발생
+
+  리스폰스의 내용이 JSON 데이터로 미리 약속된 경우에는 response 객체의 text 메소드 대신 json 메소드를 사용해서 Deserialization까지 한 번에 수행하기도 합니다. 앞으로 코드에서 text 메소드 대신 json 메소드가 등장
+  =========================================================================
+
+@@@@@ Response(응답)의 Status Code (상태코드) @@@@@
+Head: Response에 대한 부가 정보 / 상태코드 Status
+Body: 실제 데이터를 담는 부분 / 주로 JOSN 데이터
+
+* Status Code (상태 코드)
+200: 요청 내용을 서버가 정상 처리함
+X404 : 해당 url에 해당하는 데이터를 찾을 수 없음
+
+1. 각각의 상태 코드에는 대응되는 상태 메세지가 있음.
+모든 상태 코드(Status Code)는 각각 그에 대응되는 상태 메시지(Status Message)를 갖고 있습니다.
+예를 들어, 우리가 배운 200번은 OK, 404번은 Not Found라는 상태 메시지를 갖고 있습니다.
+
+2. 상태 코드는 100번대~500번대까지 있다.
+각 상태 코드는 상태 코드 옆에 바로 상태 메시지를 쓰는 형식(예: 200 OK)으로 표시함
+
+(1) 100번대 : 서버가 클라이언트에게 정보성 응답(Informational response)을 줄 때 사용되는 상태 코드
+- 100 Continue : 클라이언트가 서버에서 계쏙 리퀫트를 보내도 괜찮은지 물어봤을 때, 계속 리퀘스트를 보내도 괜챃다고 알려주는 상태 코드.
+예를 들어, 클라이언트가 용량이 좀 큰 파일을 리퀘스트에 바디에 담아 업로드하려고 할 때 서버에게 미리 괜찮은지를 물어보는 경우가 있따고 할 때, 서버가 이 100번 상태 코드의 리폰스를 주면 그제서야 본격적인 파일 업로드를 시작함.
+- 101 Switching Protocols : 클라이언트가 프로토콜을 바꾸자는 리퀘스트를 보냈을 때, 서버가 '그래요, 그 프로토콜로 전환하겠습니다'라는 뜻을 나타낼 때 쓰이는 상태 코드
+
+(2) 200번대 : 클라이언트의 리퀘스트가 성공 처리되었음을 의미하는 상태 코드.
+- 200 OK : 리퀘스트가 성공적으로 처리되었음을 포괄적으로 의미하는 상태코드. 이때 성공의 의미는 리퀘스트에 있던 메소드의 종류에 따라 다름.
+GET 리퀘스트의 경우 리소스가 잘 조회되었다는 뜻이고, POST 리퀘스트의 경우 새 리소스가 잘 생성되었다, PUT 리퀘스트의 경우 기존 리소스가 잘 수정 되었다, DELETE 리퀘스트의 경우 기존 리소스가 잘 삭제되었다는 뜻.
+- 201 Created : 리퀘스트의 내용대로 리소스가 잘 생성되었다는 뜻. POST 리퀘스트가 성공한 경우에 200번 대신 201번이 올 수도 있음.
+- 202 Accepted : 리퀘스트의 내용이 일단 잘 접수되었다는 뜻. 즉, 당장 리퀘스트의 내용이 처리된 것은 아니지만 언젠가 처리할 것이라는 뜻.
+리퀘스트를 어느 정도 모아서 한번에 실행하는 서버인 경우 등에 이런 응답을 줄 수도 있음.
+
+(3) 300번대 : 클라이언트 리퀘스트가 아직 처리되지 않았고, 리퀘스트 처리를 원하는 클라이언트 측의 추가적인 작업이 필요함을 의미하는 상태코드.
+- 301 Moved Permanently: 리소스의 위치가 바뀌었음을 나타냄. 보통 이런 상태 코드가 있는 리스폰스의 헤드에는 Location이라는 헤더도 일반적으로 함께 포함되어 있다.
+그 헤더의 값으로 리소스에 저급할 수 있는 새 URL이 담겨 있는데, 대부분의 브라우저는 만약 GET 리퀘스트를 보냈는데 이런 상태 코드가 담긴 리스폰스를 받게 되면,
+헤드에 포함된 Location 헤더의 값을 읽고, 자동으로 그 새 URL에 다시 리퀘스트를 보내는 동작(리다이렉션, redirection)을 수행 함.
+- 302 Found : 리소스의 위치가 일시적으로 바뀌었음을 나타냄. 지금 당장은 아니지만 나중에는 현재 요청한 URL이 정상적으로 인식될 것이라는 뜻.
+이 상태 코드의 경우에도 보통 그 리스폰스의 헤드에 Location 헤더가 있고, 여기에 해당 리소스의 임시 URL 값이 있음. 대부분의 브라우저들은 임시 URL로 리다이렉션함.
+- 304 Not Modified : 브라우저들은 보통 한번 리스폰스로 받았던 이미지 같은 리소스들을 그대로 내부에 저장하고 있다. 그리고 서버는 해당 리소스가 바뀌지 않았다면, 리스폰스에 그 리소스를 보내지 않고 304번 상태 코드만 헤드에 담아서 보냄으로써
+'네트워크 비용'을 절약하고 브라우저가 저장된 리소스를 재활용하도록 하는데, 사실 이 상태 코드는 웹에서 '캐시(cache)'라는 주제에 대해서 공부해야 정확하게 이해할 수 있음.
+
+(4) 400번대 : 리퀘스트를 보내는 클라이언트 쪽에 문제가 있음을 의미하는 상태 코드.
+- 400 Bad Request : 말 그대로 리퀘스트에 문제가 있음을 나타냄. 리퀘스트 내부 내용의 문법에 오류가 존재하는 등의 이유로 발생.
+- 401 Unauthorized : 아직 신원이 확인되지 않은(unauthenticated) 사용자로부터 온 리퀘스트를 처리할 수 없다는 뜻.
+- 403 Forbidden : 사용자의 신원은 확인되었지만 해당 리소스에 대한 접근 권한이 없는 사용자라서 리퀘스트를 처리할 수 없다는 뜻.
+- 404 Not Found : 해당 URL이 나타내는 리소스를 찾을 수 없다는 뜻. 보통 이런 상태 코드가 담긴 리스폰스는 그 바디에 관련 웹 페이지를 이루는 코드를 포함하고 있는 경우가 많다.
+예를 들어, 'https://www.google.com/abc'와 같이 존재하지 않는 URL에 접속하려고 하면 이런 페이지가 보이는 것을 알 수 있습니다.
+- 405 Method Not Allowed : 해당 리소스에 대해서 요구한 처리는 허용되지 않는다는 뜻. 만약 어떤 서버의 이미지 파일을 누구나 조회할 수는 있지만 아무나 삭제할 수 는 없다고 해봅시다. GET 리퀘스트는 허용되지만, DELETE 메소드는 허용되지 않는 상황.
+만약 그 이미지에 대한 DELETE 리퀘스트를 보낸다면 이런 상태 코드를 보게 됨.
+- 413 Payload Too Lage : 현재 리퀘스트의 바디에 들어있는 데이터의 용량이 지나치게 커서 서버가 거부한다는 뜻.
+- 429 Too Many Requests : 일정 시간 동안 클라이언트가 지나치게 많은 리퀘스트를 보냈다는 뜻. 서버는 수많은 클라이언트들의 리퀘스트를 정상적으로 처리해야 하기 때문에 특정 클라이언트에게만 특혜를 줄 수 없음.
+따라서 지나치게 리퀘스트를 많이 보낸ㄴ 클라이언트에게는 이런 상태 코드를 담은 리스폰스를 보낼 수 있음.
+
+(5) 500번대 : 서버 쪽의 문제로 인해 리퀘스트를 정상적으로 처리할 수 없음을 의미하는 상태 코드.
+- 500 Internal Server Error : 현재 알 수 없는 서버 내의 에러로 인해 리퀘스트를 처리할 수 없다는 뜻.
+- 503 Service Unavailable : 현재 서버 점검 중이거나, 트래픽 폭주 등으로 인해 서비스를 제공할 수 없다는 뜻.
+
+
+*리스폰스의 상태 코드(status code)를 출력하는 코드
+fetch('https://www.google.com')
+  .then((response) => {
+    console.log(response.status);   // 상태 코드 200번이 출력
+  });   
+
+fetch('https://www.codeit.kr/abc')
+  .then((response) => {
+    console.log(response.status);  // 상태 코드 404번이 출력
+  });
+
+
+  @@@@@ Content-Type 헤더 @@@@@
+
+  1. Content-Type 헤더 : 현재 리퀘스트 또는 리스폰스의 바디에 들어 있는 데이터가 어떤 타입인지를 나타냄.
+실무 개발에서는 리퀘스트 또는 리스폰스의 바디에 다양한 종류의 데이터들을 넣게 될 텐데,텍스트부터 시작해서 이미지, 영상까지 정말 많은 것들이 들어갈 수 있음.
+
+* Content-Type 헤더의 값은 '주 타입(main type)/서브 타입(sub type)'의 형식으로 나타냄.
+
+(1) 주 타입이 text인 경우(텍스트) *
+일반 텍스트 : text/plain
+CSS 코드 : text/css
+HTML 코드 : text/html
+JavaScript 코드 : text/javascript ...
+
+(2) 주 타입이 image인 경우(이미지)
+image/bmp : bmp 이미지
+image/gif : gif 이미지
+image/png : png 이미지 ...
+
+(3) 주 타입이 audio인 경우(오디오)
+audio/mp4 : mp4 오디오
+audio/ogg : ogg 오디오 ...
+주 타입이 video인 경우(비디오
+
+(4) 주 타입이 video인 경우(비디오)
+video/mp4 : mp4 비디오
+video/H264 : H264 비디오 ...
+
+(5) 주 타입이 application인 경우
+application/json : JSON 데이터
+application/octet-stream : 확인되지 않은 바이너리 파일 ...
+
+* Content-Type 헤더는 왜 필요한 걸까요? Content-Type 헤더가 존재하면, 바디의 데이터를 직접 확인해서 그 타입을 추론하지 않아도 되기 때문.
+* Content-Type을 써주지 않으면 어떻게 될까요? 서버에서 바디의 데이터가 어떤 타입인지를 확인하는 절차가 추가적으로 필요함.
+
+
+2. Content-Type 설정해보기 (Content-Type 헤더를 추가하는 법)
+const newMember = {
+  name: 'Jerry',
+  email: 'jerry@codeit.kr',
+  department: 'engineering',
+};
+
+fetch('http://learn.codeit.kr/api/members', {
+  method: 'POST'
+  headers: {   //추가된 부분
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify(newMember),
+})
+ .then((reponse) => reponse.text())
+ .then((result) => {console.log(result); });
+
+
+
+
+@@@@@ 알아두면 좋은 Content-type들(심화) @@@@@
+
+1.JSON 말고 XML (XML(Extensible Markup Language)이라고 하는 데이터 포맷도 있다.)
+*XML : 태그를 사용해서 데이터를 나타내는 것 
+
+{
+  "name":"Michael Kim",
+  "height":180,
+  "weight":70,
+  "hobbies":[
+     "Basketball",
+     "Listening to music"
+  ]
+}  // JSON 데이터
+
+<?xml version="1.0" encoding="URF-8" ?>
+<person>
+  <name>Michael Kim</name>
+  <height>180</height>
+  <weight>70</weight>
+  <bobiies>
+    <value>Basketball</value>
+    <balue>Listening to music</value>
+  </hobbies>
+</person>  // XML 데이터
+
+"name": "Michael Kim" 를 <name>Michael Kim</name> 이런 식으로 시작태그와 끝태그, 그리고 사이의 값으로 나타냄.
+
+*XML은 같은 양의 데이터를 표현하더라도 JSON에 비해 더 많은 용량을 차지하고, JSON에 비해 가독성이 떨어지며, 배우기가 어렵다는 문제 등으로 인해, 오늘날 XML의 입지는 다소 좁아진 것이 사실
+
+* XML을 나타내는 Content-Type 헤더의 값은 'application/xml'
+'application/xml'뿐만 아니라 XML의 문법을 따르되 거기에 특수한 규칙을 더해 만든 데이터 타입들도 존재,  이름 끝에 +xml을 붙여서 사용 
+
+
+2. form 태그에서 사용되는 타입들
+
+(1) application/x-www-form-urlencoded 타입
+form 태그는 회원가입 화면이나 게시물 업로드 화면 등을 만들 때 주로 활용되는 HTML 태그,
+form 태그를 사용하면 자바스크립트 코드 없이 오로지 HTML만으로도 리퀘스트를 보내는 것이 가능.
+(오늘날에는 form 태그를 사용하지 않고 자바스크립트 코드로 직접 사용자의 입력값을 취합해서 리퀘스트를 보내는 방법이 많이 사용되고 있지만 여전히 form 태그만으로 리퀘스트를 보내는 방식도 쓰이고는 있기 때문에 알아두는 게 좋다.)
+
+{
+  "id": 6,
+  "name": "Jason",
+  "age": 34,
+  "department": "engineering"
+} // JSON 데이터 
+
+
+id=6&name=Jason&age=34&department=engineering  // pplication/x-www-form-urlencoded 타입
+* 프로퍼티의 이름과 값을 "이름=값" 형식으로 나타내고 각각의 프로퍼티를 "&" 기호로 연결하는 방식으로 데이터를 표현 (URL의 query 부분에서 사용하는 방식과 똑같)
+
+
+* 특수 문자들이 각자 자신의 원래 용도가 아닌 다른 용도로 사용되는 경우 Percent Encoding을 해줘야 함
+:	     /	   ?	  #	    [	     ]	   @    !	     $	  &	   '	  ...	  ''(공백)
+%3A	  %2F	  %3F	 %23  	%5B	  %5D	  %40  	%21  	%24	 %26	%27	  ...	  %20 또는 +
+
+'https://codeitBooks.com/books?title=Tom&Jerry&publishedData=20210115'
+'https://codeitBooks.com/books?title=Tom%26Jerry&publishedData=20210105' //으로 변경
+
+
+
+*** URL에서
+'https://www.google.com/코딩'
+'https://www.google.com/%EC%BD%94%EB%94%A9'  // 코딩이라는 한글이 변환됨.
+
+(1) 'URL 안에서 미리 정해진 용도를 가진 특수 문자를 다른 용도로 사용'하거나 
+(2) '영어와 숫자'를 제외한 다른 나라 문자를 나타낼 때는
+Percent encoding을 해주는 것이 정해진 규칙입니다.
+
+
+(2) multipart/form-data 타입 (실무적으로 굉장히 중요한 타입)
+multipart(여러 개의 파트)라는 단어에서도 유추할 수 있듯이 이 값은 여러 종류의 데이터를 하나로 합친 데이터를 의미하는 타입.
+
+
+글의 제목과 내용을 적고, 이미지 파일이나 영상 파일을 첨부할때 '게시글 업로드' 버튼을 누르면 파일들의 내용도 리퀘스트에 함께 담겨서 가야할텐데, 바로 이럴 때 사용되는 것이 multipart/form-data입니다.
+(1) form 태그만으로도 그리고,
+(2) 자바스크립트 코드만으로도 리퀘스트의 바디에 담아 전송할 수 있습니다.
+
+multipart/form-data 타입은 여러 데이터를 하나로 묶어서 리퀘스트의 바디에 담아보내려고 할 때 사용되는 아주 중요한 타입입니다. 실제 웹 서비스를 떠올려보면, 우리가 회원가입을 하든, 게시글을 업로드하든 다양한 데이터를 한번에 묶어서 보내는 경우가 많죠? 실제로 개발을 할 때도 자주 사용하게 되는 타입이니까 꼭 기억!!!
+
+
+
+
+
+@@@@@ 그 밖에 알아야 할 내용들 @@@@@
+
+1. Ajax (Asynchronous JavaScript And XML)
+웹 브라우저가 현재 페이지를 그대로 유지한 채로 서버에 리퀘스트를 보내고 리스폰스를 받아서, 새로운 페이지를 로드하지 않고도 변화를 줄 수 있게 해주는 기술
+(구글 맵(Google Map) 같은 웹 서비스를 생각해보면 이해하기 쉽다.)
+사용자가 보고 있는 현재 페이지를 방해하지 않고 별도로 서버로 리퀘스트를 보내고, 리스폰스를 받아왔기 때문
+
+
+const xhr = new XMLHttpRequest();  // XMLHttpRequest라고 하는 생성자 함수로 객체를 생성 (XMLHttpRequest라고 하는 객체를 통해 Ajax 통신)
+xhr.open('GET', 'https://learn.codeit.kr/api/members');
+xhr.onload = function () {
+  console.log(xhr.response);
+};
+xhr.onerror = function () {
+  alert('Error!');
+};
+xhr.send();
+
+*** 예전엔 XMLHttpRequest를 이렇게 직접 사용할 일이 많았지만 요즘에는 굳이 그렇게 하지 않아도 됩니다.(2020년 1월 기준) ***
+1. XMLHttpRequest 객체 이후에 등장한 함수, 바로 이때까지 우리가 배운 fetch 함수를 사용해서 Ajax 통신을 할 수 있기 때문
+2. XMLHttpRequest을 기반으로 더 쓰기 편하게 만들어진 axios라는 패키지가 존재 (자바스크립트에서는 라이브러리보다는 '패키지'라는 단어)
+
+즉, 개발 실무에서는 fetch 함수 또는 axios 패키지를 사용
+-보통 axios 패키지에 좀더 다양한 기능들이 있어서 주로 axios를 쓰는 편이지만, 외부의 패키지를 설치하고 싶지 않은 경우에는 fetch 함수를 사용하기도 함.
+
+<a href="https://learn.codeit.kr/api/main">메인 화면으로 가기</a> // 새 페이지를 로드하는 하는방식 (전통적인 방식)
+
+// (위 예시를 단순화한 코드입니다)
+function getLocationInfo(latitude, longitude) {
+  fetch('https://map.google.com/location/info?lat=latitude&lng=longitude')
+    .then((response) => response.text())
+    .then((result) => {  /* 사용자 화면에 해당 위치 관련 정보 띄워주기 */ });
+}  // Ajax 통신
+(1) 언제 아예 새로운 페이지를 로드하고
+(2) 언제 Ajax 통신을 해서 현재 페이지 내에서 부드러운 변화를 줄 건지를
+
+
+
+2. GET, POST, PUT, DELETE 이외의 메소드들
+(1) PATCH : 기존의 데이터를 수정할 때 사용하는 메소드
+PUT은 기존 데이터를 아예 새로운 데이터로 덮어씀으로써 수정하려고 할 때 쓰는 메소드이고, PATCH는 새 데이터로 기존 데이터의 일부를 수정하려고 할 때
+PUT은 덮어쓰기, PATCH는 일부 수정
+{
+  "id": 3,
+  "name": "Michael",
+  "age": 25
+}
+--------------------------
+{
+  "age": 30
+}
+--------------------------
+{
+  "id": 3,
+  "name": "Michael",
+  "age": 30
+}
+// PATCH 으로 일부 변경
+PATCH의 경우에는 보통, 리퀘스트의 바디에 있는 내용을 기존 데이터의 각 속성과 대조 및 병합(merge-patch)하면서 데이터를 수정하기 때문에 때문에, 바디에 수정할 프로퍼티의 데이터만 넣어줘도 되는 것.WebKitCSSMatrix
+
+
+(2) HEAD : GET 메소드와 동일
+GET 리퀘스트를 보냈을 때 받았을 리스폰스에서 바디 부분은 제외하고, 딱 헤드 부분만 받는다는 점이 다름.
+만약 파일의 용량이 너무 큰 경우에는 파일을 받지 않으려고 하는데, 이때 파일의 용량만 조사하기 위해서 HEAD 메소드가 담긴 리퀘스트를 보내볼 수 있다.
+Content-length와 같이 컨텐츠 용량을 나타내는 헤더가 있어서 파일의 용량 정보는 알게 될 수도 있는데
+*실제 데이터가 아니라 데이터에 관한 정보만 얻으려고 하는 상황 등에 HEAD 메소드가 활용.
+
+
+3. 웹 통신 말고 다른 통신
+HTTP, HTTPS 이외에도, FTP, SSH, TCP, UDP, IP, Ethernet 등 정말 다양한 종류의 프로토콜들이 있다.
+이런 프로토콜들은 각각 네트워크 통신의 특정 계층에 속한다는 점.
+
+1. HTTP(HyperText Transmission Protocol)
+2. TCP(Transmission Control Protocol)
+3. IP(Internet Protocol)
+4. Ethernet
+의 순서대로 프로토콜 기반으로 동작하고 있음. 위로 갈수록 고수준 프로토콜, 아래로 갈수록 저수준 프로토콜.
+('웹 개발자'라고 하면 당장은 HTTP 프로토콜 상에서 이루어지는 일만 공부한다고 해도 큰 어려움이 없을 수도 있습니다. 하지만 특히 서버 쪽을 담당하는 '백엔드 개발자'의 경우에는 서비스의 사용자 수가 늘어나서 리퀘스트의 수가 늘어날수록 HTTP 아래에 있는 프로토콜에 대해서도 어느 정도 알고 있어야 각종 성능 문제 등을 해결할 수 있습니다.)
+
+
+
+@@@@@ fetch 함수와 비동기 실행 @@@@@
+패치함수의 영역이 실행될때, 리퀘스트를 보내고 리스폰스가 왔을때 실행할 콜백을 덴 메소드로 등록만하고 바로 그다음줄의 코드가 실행. 정작 콜백은 나중에 리스폰스가 도착했을때 실행.
+한번 시작된 작업이 완료되기전에 바로 다음 코드로 실행이 넘어가고 나중에 콜백이 실행됨으로써 작업이 마무리 되는것을 비동기실행이라고 함.
+promise 객체
+
+console.log('Start!');
+
+fetch('https://www.google.com')
+ .then((response) => response.text())
+ .then((result) => {console.log(result); });
+
+ console.log('End');
+
+ fetch 함수가 리퀘스트를 보내고, 서버의 리스폰스를 받게 되면 그때서야 이 콜백들이 순서대로 실행
+1. console.log('Start');
+2. fetch 함수(리퀘스트 보내기 및 콜백 등록)
+3. console.log('End');
+4. 리스폰스가 오면 2. 에서 then 메소드로 등록해뒀던 콜백 실행
