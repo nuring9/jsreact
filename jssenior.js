@@ -598,3 +598,125 @@ fetch('https://www.google.com')
 2. fetch 함수(리퀘스트 보내기 및 콜백 등록)
 3. console.log('End');
 4. 리스폰스가 오면 2. 에서 then 메소드로 등록해뒀던 콜백 실행
+
+특정 작업을 시작(리퀘스트 보내기)하고 완벽하게 다 처리(리스폰스를 받아서 처리)하기 전에, 실행 흐름이 바로 다음 코드로 넘어가고, 나중에 콜백이 실행되는 것을 '비동기 실행'이라고 합니다.
+
+@@@@@ 알아야하는 비동기 실행 함수들 @@@@@
+
+1. setTimeout 함수
+특정 함수의 실행을 원하는 시간만큼 뒤로 미루기 위해 사용하는 함수
+console.log('a');
+setTimeout(() => { console.log('b'); }, 2000); // 이 콜백의 실행을, 두 번째 파라미터에 적힌 2000 밀리세컨즈(=2초) 뒤로 미룸
+console.log('c'); 
+= a c b 순으로 실행,  약 2초가 지난 후에 b가 출력
+setTimeout에서 콜백이 실행되는 조건은, '설정한 밀리세컨즈만큼의 시간이 경과했을 때'
+
+2. setInterval 함수
+특정 콜백을 일정한 시간 간격으로 실행하도록 등록하는 함수 (Interval는 '간격')
+console.log('a');
+setInterval(( => { console.log('b'); }, 2000);) //약 2초 뒤에 b가 출력된 후 그 뒤로 계속 2초 간격으로 b가 반복 출력
+console.log('c');
+= a c (5)b
+
+3. addEventListener 메소드
+파라미터로 전달된 콜백이 당장 실행되는 것이 아니라, 나중에 특정 조건(클릭 이벤트 발생)이 만족될 때(마다) 실행되기 때문
+
+DOM 객체의 메소드로, 만약 사용자가 웹 페이지에서 어떤 버튼 등을 클릭했을 때, 실행하고 싶은 함수가 있다면,
+(1) 해당 DOM 객체의 onclick 속성에 그 함수를 설정하거나, 
+(2) 해당 DOM 객체의 addEventListener 메소드의 파라미터로 전달하면 됩니다.
+
+* onclick 속성
+btn.onclick = function (e) { // 해당 이벤트 객체가 파라미터 e로 넘어옵니다.
+  console.log('Hello Codeit!');
+};
+// 또는 arrow function 형식으로 
+btn.onclick = (e) => {
+  console.log('Hello Codeit!');
+};
+
+(2) addEventListener 메소드
+btn.addEventListener('click', funtion (e) {
+  console.log('Hello Codeit!');
+});
+// 또는 arrow function 형식으로 
+btn.addEventListener('clikc', (e) => {
+  console.log('Hello Codeit!');
+});
+
+* setTimeout(콜백, 시간) 
+* setInterval(콜백, 시간)
+* addEventListener(이벤트 이름, 콜백)
+
+@@@@@ Promise 객체 @@@@@
+*fetch 함수는 promise 객체를 리턴 함.
+* promise : 작업에 관한 '상태정보'
+
+*** poromise 의 3가지 상태 ****
+1. pending - 진행중
+2. fulfilled - 성공 (작업 성공 결과) response가 작업의 성공결과에 해당.
+3. rejected - 실패 (작업 실패 정보)
+
+*then메소드는 promise객체가 pending 상태에서 fulfilled 상태가 될때 실행할 콜백을 등록하는 메소드.
+*fetch 함수가 리퀘스트를 보내고 리스폰스를 정상적으로 받았을때 fulfilled가 됨. 그때 콜백이 실행 됨.
+
+* fetch함수는 promise 객체를 리턴함. promise의 then 메소드를 사용하면, 나중에 해당 promise가 pending에서 fulfilled가 됬을때, 실행할 콜백을 등록할 수 있음.
+그리고 response가 와서 promise가 실제로 pending상태에서 fulfilled가 되면, 등록해둔 콜백이 실행되는 거고, 그 작업 성공 결과가 콜백의 파라미터로 넘어오게 됨.
+
+* promise객체에 then 메소드를 연속적으로 붙이는것을 Promise Chaining 이라고 함. Chaining이란 이어붙이기, 연결하기 뜻
+* then 메소드가 새로운 promise객체를 리턴함. 각각 별개의 promise를 리턴함. 
+
+
+***** promise의 then 메소드는 또 다른 promise객체를 리턴함. promise 객체는 처음에는 pending 상태이지만,  then 메소드 안의 콜백이 실행되고, 어떤 값을 리턴하는지 따라서 그 상태가 달라짐.
+만약 콜백에서 promise 객체를 리턴하면, 앞으로 promise가 갖게될 상태와 결과를 그대로 따라서 갖게 됨.
+(콜백이 리턴한 promise객체가 fulfilled상태가 되면 then메소드가 리턴했던 promise객체도 fulfilled가 됨. 만약 콜백이 리턴한 promise객체가 rejected면, then메소드가 리턴한 promise객체도 똑같이 rejected 가 됨)
+하지만 promise 객체의 이외의 값(숫자, 문자열, 일반 객체 등)이라면 fulfilled 상태가 되고 해당 리턴값을 작업 성공 결과로 갖게됨.
+
+
+
+
+@@@@@ text, json 메소드도 Promise 객체를 리턴 @@@@@@
+
+1. text 메소드
+fetch 함수로 리스폰스를 잘 받으면, response 객체의 text 메소드는, fulfilled 상태이면서 리스폰스의 바디에 있는 내용을 string 타입으로 변환한 값을 '작업 성공 결과'로 가진 Promise 객체를 리턴.
+이때 그 작업 성공 결과는 string 타입, 그 값이 만약 JSON 데이터라면 JSON 객체의 parse 메소드로 Deserialize(역직렬화)를 해줘야합니다. (JSON.parse(result);)
+
+fetch('https://jsonplaceholder.typicode.com/users')
+  .then((response) => response.text())  // response 객체의 text 메소드로 리스폰스의 내용을 추출(response.text();)하고 이것을 Deserialize(JSON.parse(result);)
+  .then((result) => {
+    const users = JSON.parse(result);
+    // ...
+  });
+
+
+  2. json 메소드
+  fetch 함수로 리스폰스를 잘 받으면, response 객체의 json 메소드는, fulfilled 상태이면서, 리스폰스의 바디에 있는 JSON 데이터를 자바스크립트 객체로 Deserialize해서 생겨난 객체를 '작업 성공 결과'로 가진 Promise 객체를 리턴.
+  리스폰스의 바디에 있는 내용이 JSON 타입이 아니라면 에러가 발생하고 Promise 객체는 rejected 상태가 되면서 그 '작업 실패 정보'를 갖게 됨.
+
+  fetch('https://jsonplaceholder.typicode.com/users')
+  .then((response) => response.json()) //response 객체의 json 메소드로 리스폰스의 내용 추출과 Deserialize를 한 번에 수행(response.json())
+  .then((users) => {
+    // ...
+  });
+
+
+
+@@@@@ Promise Chaining @@@@@@
+- 콜백에서 리턴한 Promise 객체로부터 새로운 Chain이 시작됨.
+- 비동기 작업을 순차적으로 수행해야할때 전체코드를 좀 더 깔끔하게 나타내기위해서 사용 (then 메소드를 붙여가면서)
+
+
+@@@@@ rejected 상태가 되면 실행할 콜백 @@@@@@
+
+fetch('https://jsonplaceholder.typicode.com/users')
+ .then((response => response.text(), (error) => {console.log(error); })) 
+ // 2개의 콜백이 들어가 있음, 첫번째는 fulfilled일때 두번째는 rejected일때 리턴. rejected 상태의 콜백을 설정하고 싶다면 then메소드의 두번째 파라미터로 원하는 콜백을 넣어주면 됨.
+ .then((result) => { console.log(result); });
+
+
+fetch('https://jsonplaceholder.typicode.com/users')
+ .then((response => response.text(), (error) => {console.log(error); }))
+ // 첫번째 콜백은 promise 객체가 fulfilled 상태일때 실행되기 때문에 그 파라미터로 작업성공 결과가 넘어오지만, 두번째 콜백은 promise 객체가 rejected 일때 실행되기 때문에 그 파라미터로 작업실패 정보가 넘어옴.(그래서 error라고 이름을 씀.)
+ //  promise 객체가 rejected 상태가 되면, 작업실패정보가 파라미터로 넘어옴
+ .then((result) => { console.log(result); }); 
+
+ *자바스크립트에서는 함수가 아무것도 리턴하지 않으면, undefined를 리턴한 것으로 봅니다. 따라서 콜백에서 아무것도 리턴하지 않아도 undefined를 리턴한 것으로 보아서, A는 fulfilled 상태가 되고, 작업 성공 결과로 undefined를 갖게 됩니다.
