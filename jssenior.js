@@ -720,3 +720,130 @@ fetch('https://jsonplaceholder.typicode.com/users')
  .then((result) => { console.log(result); }); 
 
  *자바스크립트에서는 함수가 아무것도 리턴하지 않으면, undefined를 리턴한 것으로 봅니다. 따라서 콜백에서 아무것도 리턴하지 않아도 undefined를 리턴한 것으로 보아서, A는 fulfilled 상태가 되고, 작업 성공 결과로 undefined를 갖게 됩니다.
+
+
+@@@@@ then 메소드 완벽하게 이해 하기 @@@@@
+
+1. 실행된 콜백이 어떤 값을 리턴하는 경우
+
+(1) Promise 객체를 리턴하는 경우 ( response 객체의 json 메소드가 Promise 객체를 리턴한다는 사실)
+fetch('https://jsonplaceholder.typicode.com/users')
+  .then((response) => response.json())
+  .then((result) => { console.log(result) }); 
+  // 콜백에서 리턴한 Promise 객체로부터 다시 Promise Chain이 쭉 이어져 나간다
+  
+(2) Promise 객체 이외의 값을 리턴하는 경우
+// Internet Disconnected (인터넷이 안되는 상황)
+
+fetch('https://jsonplaceholder.typicode.com/users')
+  .then((response) => response.json(), (error) => 'Try again!') // 작업이 실패해서 두 번째 콜백인 (error) ⇒ 'Try again! 이 실행
+  .then((result) => { console.log(result) }); //콜백을 등록한 then 메소드가 리턴했던 Promise가 fulfilled 상태가 되고, 그 작업 성공 결과로 'Try again' 문자열을 갖게 됨.
+
+
+
+2. 실행된 콜백이 아무 값도 리턴하지 않는 경우
+  // Internet Disconnected
+
+fetch('https://jsonplaceholder.typicode.com/users')
+.then((response) => response.json(), (error) => { alert('Try again!'); }) // 콜백이 무언가를 리턴하는 게 아니라 이 코드에서처럼 단순히 alert 함수만 실행하고 끝남.
+.then((result) => { console.log(result) }); //아무것도 리턴하지 않으면 undefined를 리턴
+// 1. (2) 규칙에 따라 then 메소드가 리턴했던 Promise 객체는 fulfilled 상태가 되고, 그 작업 성공 결과로 undefined
+
+
+
+3. 실행된 콜백 내부에서 에러가 발생했을 때
+
+(1) 에러발생 첫번째 조건
+fetch('https://jsonplaceholder.typicode.com/users')
+  .then((response) => { 
+        ...
+        add(1, 2); // ReferenceError 발생
+        ... 
+  });
+
+(2) 에러발생 두번째 조건
+ fetch('https://jsonplaceholder.typicode.com/users')
+.then((response) => { 
+      ...
+      throw new Error('failed'); //인위적으로 throw 문을 써서 에러를 발생
+      ... 
+}); 
+
+(3) 예시
+const promise = fetch('https://jsonplaceholder.typicode.com/users')
+  .then((response) => { throw new Error('test'); });
+/* Promise 객체가 rejected 상태 , 발생한 Error 객체를 그 작업 실패 정보로 갖고 있다.
+이렇게 콜백 실행 중에 에러가 발생하면, then 메소드가 리턴한 Promise 객체는 rejected 상태가 되고, 작업 실패 정보로 해당 Error 객체를 갖게 된다 
+-[PromiseState]]는 Promise 객체의 상태를, [[PromiseResult]]는 Promise 객체의 결과(작업 성공 결과 또는 작업 실패 정보)를 나타내는 내부 슬롯 */
+
+
+4. 아무런 콜백도 실행되지 않을 때
+// Internet Disconnected
+
+fetch('https://www.google.com') // Promise-1  rejected 상태
+  .then((response) => response.text()) // Promise-2 첫 번째 then 메소드의 두 번재 콜백이 실행되여야 하는데, 두번째 콜백이 없음. 이전 Promise 객체와 동일한 상태와 결과를 갖게 됨.
+  .then((result) => { console.log(result) }, (error) => { alert(error) }); 
+/* Promise-2 객체는 Promise-1 객체처럼 rejected 상태가 되고, 똑같은 작업 실패 정보를 갖게 됨.
+rejected 상태가 된 Promise-2의 then 메소드에는 이제 두 번째 콜백이 존재하기 때문에 그 두 번째 콜백이 실행.
+!! 아무런 콜백도 실행되지 않는 경우에는 그 이전 Promise 객체의 상태와 결과가 그대로 이어진다는 사실!! */
+
+@@@@@ catch 메소드 @@@@@
+promise객체가 rejected 상태가 될때 실행할 콜백은 then 메소드의 두번째 파라미터를 넣었었는데, 또 다른 방법이 catch 메소드임.
+(1)
+fetch('https://jsonplaceholder.typicode.com/users')
+  .then((response) => response.text())
+  .catch((error) => { console.log(error); })  //.then(undefined, (error) => { console.log(error); }) 와 동일하게 보면 되는데, 보통 실무에선 catch로 많이 씀
+  .then((result) => { console.log(result); });
+
+(2)
+// Internet Disconnected
+fetch('https://jsonplaceholder.typicode.com/users') // Promise-A
+  .then((response) => response.text()) // Promise-B
+  .then(undefined, (error) => { console.log(error); }) // Promise-C
+  .then((result) => { console.log(`Quiz: ${result}`); }); // Promise-D 
+ /*catch 메소드는 사실 then 메소드라고 했으니까, catch 메소드 안의 콜백이 실행되었을 때 아무 값도 리턴하지 않았는데, 아무 값도 리턴하지 않은 경우에는 undefined를 리턴한 것으로 간주
+ catch 메소드가 리턴한 Promise 객체는 fulfilled 상태가 되면서, undefined를 작업 성공 결과로 가지게 되는 것, 그래서 그 뒤의 then 메소드의 콜백의 파라미터로 undefined가 넘어가서 undefined가 출력*/
+
+
+
+@@@@@ catch 메소드는 마지막에 쓰임 : cath 함수 뒤에 then메소드에 인위적인 에러를 주게 되면 fetch 함수는 정상실행이 되지만 그 뒤에 발생한 에러는 처리하지 못함. @@@@@
+ 1. Promise Chain 중에서 단 하나의 작업이라도 실패하면 전체 작업이 실패했다고 봐도 되는 경우에는 그냥 Promise Chain 마지막에만 catch 메소드를 쓰임.
+ 2. 비록 에러가 발생했다고 해도 만약 실패한 작업 대신 다른 방법을 통해서 작업을 정상적으로 끝마칠 수 있는 상황이라면 catch 메소드를 중간에 사용하기도 함.  (미리 저장해둔 일반 뉴스 데이터를 구해오는 getStoredGeneralNews 함수를 실행하는 것처럼)
+
+
+@@@@@ finally 메소드 @@@@@
+* promise 객체가 fulfilled 상태던지, rejected 상태던지 상관없이 항상 실행하고 싶은 콜백이 있을 때 사용.
+* promise chain 에서 catch 보다 더 아래에 쓰임 (마지막)
+* 에러를 처리하는 chtch메소드 안에서 에러가 발생하더라도, 실행함. 정상적인 경우든, 최악의 경우든 항상 실행됨.
+  예를들어, promise chaining에서 작업을 수행하기 위해서 사용했던 자원을 정리하거나, 어떤 로그 기록을 남겨야 하거나, 어떠한 경우든 항상 특정 변수의 값을 변경 해줘야 할때 사용
+
+fetch('https://jsonplaceholder.typicode.com/users') 
+  .then((response) => response.text())
+  .then((result) => { console.log(error); }) 
+  .catch((error) => { console.log(error); })
+  .finally(() => {console.log('exit'); }); // 작업성공결과나 작업실패정보가 필요하지 않기 때문에, 콜백에 파라미터가 없는게 특징
+
+
+@@@@@ 직접 만들어보는 Promise 객체 @@@@@
+*** resolve 파라미터는 생성될 promise 객체를 fulfilled 상태로 만들 수 있는 함수가 연결
+***reject 파라미터는 생성될 promise객체를 rejected 상태로 만들 수 있는 함수로 연결.
+
+(1) fulfilled 상태
+const p = new Promise((resolve, reject) => {  // new Promise 의 파라미터에 들어간 함수를 'execuor' 함수라고 함.
+ setTimeout(() => { resolve('success'); }, 2000); // p라는 Promise객체가 2초후에 fulfilled가 된다는 뜻
+}); //resolve 함수 안에 넣은 success 문자열이 작업 성공 결과가 됨.
+
+p.then((result) => { console.log(result); }); //success가 작업성공결과가 되어서 result 리턴
+
+= 2초후에 success 출력
+
+(2) rejected 상태
+const p = new Promise((resolve, reject) => {  // new Promise 의 파라미터에 들어간 함수를 'execuor' 함수라고 함.
+  setTimeout(() => { reject( new Error('fail')); }, 2000); // p라는 Promise객체가 2초후에 fulfilled가 된다는 뜻
+ }); //resolve 함수 안에 넣은 success 문자열이 작업 성공 결과가 됨.
+ 
+ p.catch((error) => { console.log(error); }); 
+
+ = 2초후에 Error: fail 출력
+
+ *사실 실무에서는 Promise 객체를 직접 생성할 일이 없음.  Promisify 작업을 할때 주로 사용
