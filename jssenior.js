@@ -847,3 +847,515 @@ const p = new Promise((resolve, reject) => {  // new Promise 의 파라미터에
  = 2초후에 Error: fail 출력
 
  *사실 실무에서는 Promise 객체를 직접 생성할 일이 없음.  Promisify 작업을 할때 주로 사용
+
+ 전통적인 형식의 비동기 실행 함수를 사용하는 코드를, promise 기반의 코드로 변환하기 위해 
+
+
+
+
+
+ @@@@@ Promisify @@@@@
+
+
+1. setTimeout 함수 예시
+function wait(text, milliseconds) {
+  const p = new promise((resolve, reject) => {
+    setTimeout(() => { resolve(text); }, 2000);
+  });
+  return p;
+}
+
+fetch('https://jsonplaceholder.typicode.com/users')
+ .then((response) => response.text())
+ .then((result) => wait(`${result} by Codeit`, 2000)) // 2초 후에 리스폰스의 내용 뒤에 'by Codeit' 추가하고 리턴
+ .then((result) => { console.log(result); });
+ 
+* 전통적인 형식(setTimeout)의 비동기 실행 함수를 Promise 객체로 감싸서 그 Promise 객체를 리턴하는 형식으로 만드는 작업을 Promisify(프로미스화하다)라고 한다.
+
+
+ 2. 콜백 헬(callback hell)과 Promise
+ 
+ *  Node.js에서 fs는 [readFile] 메소드를 가진 객체
+ fs.readFile('file1.txt', 'utf8', (error, data) => {
+  if (err) {
+    console.log(err);
+  } else {
+    console.log(data);
+  }
+}); // 콜백 헬(콜백 지옥, callback hell) 현상을 초래하게 됨.
+
+---------- [readFile] 메소드를 [Promisify] 화 ----------
+* readFile_promisified라는 이름의 함수를 정의
+function readFile_promisified(filename) {
+  const p = new Promise((resolve, reject) => {
+    fs.readFile(filename, 'utf8', (error, date) => {
+      if (error) {
+        reject(error); // 에러 발생 시 -> rejected 
+      } else {
+        resolve(date); // 파일 내용 읽기 완료 -> fulfilled 
+      }
+    });
+  });
+  return p;
+} 
+/*
+함수 안에서는 Promise 객체를 직접 생성
+Promise 객체가 생성될 때 실행되는 executor 함수 안에서는 fs 객체의 readFile 메소를 호출
+작업을 수행하다가 에러가 나면 readFile 함수의 콜백에서 reject 함수를 호출하고, 파일의 내용을 정상적으로 다 읽었을 때는 resolve 함수를 호출한다는 사실
+reject 함수의 파라미터에는 error 객체를, resolve 함수의 파라미터에는 파일의 내용인 data를 전달, 생성된 Promise 객체의 작업 실패 정보 또는 작업 성공 결과 */
+
+* readFile 메소드를 Promisify해서 만든 readFile_promisified [함수를 사용]
+readFile_promiseified('file1.txt')
+ .then((data) => { console.log(data); return readFile_promisified('file2.txt'); })
+ .then((data) => { console.log(data); return readFile_promisified('file3.txt'); })
+ .then((data) => { console.log(data); })
+ .catch((error) => { console.log(error); });
+
+ /* readFile_promisified 함수는 Promise 객체를 리턴하기 때문에 이렇게 자유롭게 Promise Chain 안에서 사용할 수 있음.
+ 전통적인 형식의 비동기 실행 함수를 Promisify해서 콜백 헬을 방지하고, 가독성 높은 코드를 작성 */
+ ------------------------------------------------------------
+
+ 3. Promisify를 하면 안 되는 함수들도 있다.
+ 전통적인 형식의 비동기 실행 함수라고 해서 모두 Promisify해서 사용해도 되는 것은 아니다.
+ 콜백을 한번만 실행하는 것들(setTimeout, readFile 등)만 Promisify해서 사용해도 되는데, 콜백을 여러 번 실행하는 함수들(setInterval, addEventListener 등)인 경우에는 이렇게 Promisify하면 안됨.
+ Promise 객체는 한번 pending 상태에서 fulfilled 또는 rejected 상태가 되고나면 그 뒤로는 그 상태와 결과가 바뀌지 않기 때문이다.
+
+
+
+
+
+ @@@@@ 이미 상태가 결정된 Promise 객체 @@@@@
+
+ * new 생성자와 executor 함수 * //기존방식
+ const p = new Promise((resolve, reject) => {
+ 
+ });  
+ 
+
+(1) fulfilled 상태의 Promise 객체 만들기
+const p = Promise.resolve('success');
+//fulfilled 상태이면서, 작업 성공 결과로 문자열 'success'를 가진 Promise 객체
+
+* 적용 
+const p = Promise.resolve('success');
+p.then((result) => {console.log(result); }, (error) => {console.log(error); });
+// 첫번째 콜백이 실행되어서 작업 성공 결과인 문자열 success가 출력
+
+(2) rejected 상태의 Promise 객체 만들기
+const p = Promise.reject(new Error('fail'));
+//rejected 상태이면서, 작업 실패 정보로, fail이라는 메시지를 가진 Error 객체를 가진 Promise 객체
+
+* 적용
+const p = Promise.reject(new Error('fail'));
+p.then((result) => { console.log(result); }, (error) => {console.log(error); });
+//두 번째 콜백이 실행되어서 작업 실패 정보인 Error 객체의 내용이 출력되
+
+
+*** 사용 목적
+예시) 아래는 문제(problem이 falsy인 경우)가 없는 경우에만 fetch 함수를 호출해서 Promise 객체를 리턴하는 함수임.
+function doSomething(a, b) {
+  //~~
+if (problem) {
+  throw new Error('Failed due to..'));
+} else {
+  return fetch('https://~');
+}
+} 
+
+위의 함수가 만약 문제가 존재하는 경우에도 Promise 객체를 리턴하고 싶다면 reject 메소드 적용
+function doSomethig(a, b) {
+  //~~ 중간코드 생략
+  if (problem) {
+    return Promise.reject(new Error('Failed due to.'));
+  } else {
+    return fetch('https://~');
+  }
+}
+//문제가 있는 경우에도 에러를 바로 throw하는 게 아니라, 생성한 에러를 Promise 객체의 작업 실패 정보로 설정해서, 그 Promise 객체를 리턴하는 것으로 바뀜
+어떤 함수가 어떤 상황이든 항상 Promise 객체를 리턴하는 것으로 통일하고 싶은 경우에는 resolve나 reject 메소드를 유용하게 사용.
+
+
+
+
+*** 어느 시점이든, 몇 번의 then 메소드를 붙이든 상관없이, pending 상태만 아니라면 항상 then 메소드로 Promise 객체의 결과를 추출할 수 있다.***
+[ Promise 객체는 항상 결과를 줄 수 있는 공급자(Provider)이고 그것의 then 메소드는 그 결과를 소비하는 콜백인 소비자(Consumer)를 설정하는 메소드라는 사실을 잘 기억!!!]
+
+const p = new Promise((resolve, reject) => {
+  setTimeout(() => { resolve('success'); }, 2000); // 2초 후에 fulfilled 상태가 됨
+});
+
+p.then((result) => { console.log(result); }); // Promise 객체가 pending 상태일 때 콜백 등록
+setTimeout(() => { p.then((result) => { console.log(result); }); }, 5000); // Promise 객체가 fulfilled 상태가 되고 나서 콜백 등록 
+
+
+@@@@@ 여러 Promise 객체를 다루는 방법(심화) @@@@@
+
+1. all 메소드
+all 메소드는 여러 Promise 객체의 작업 성공 결과를 기다렸다가 모두 한 번에 취합하기 위해서 사용 
+all 메소드도 then 메소드처럼 새로운 Promise 객체를 리턴
+all 메소드는 하나의 Promise 객체라도 rejected 상태가 되면, 전체 작업이 실패한 것으로 간주해야 할 때 사용
+
+// 1번 직원 정보
+const p1 = fetch('https://learn.codeit.kr/api/members/1').then((res) => res.json());
+// 2번 직원 정보
+const p2 = fetch('https://learn.codeit.kr/api/members/2').then((res) => res.json());
+// 3번 직원 정보
+const p3 = fetch('https://learn.codeit.kr/api/members/3').then((res) => res.json());
+
+Promise
+  .all([p1, p2, p3])  //all 메소드의 아규먼트로는 배열, 각 직원 정보를 요청하고 받아서 Deserialize까지 수행한 작업 성공 결과를 담고 있는 Promise 객체들인 p1, p2, p3 객체
+  .then((results) => {
+    console.log(results); // Array : [1번 직원 정보, 2번 직원 정보, 3번 직원 정보]
+  });
+
+= 결과 
+(3) [{...}, {...}, {...}]
+0: ~~ //id 1번 정보 생략
+1: ~~ //id 2번 정보 생략
+2: ~~ //id 3번 정보 생략
+
+(1) 각 개별 Promise 객체의 작업 성공 결과로 이루어진 배열을 
+(2) 자신의 작업 성공 결과로 갖는다는 것을 알 수 있습니다.
+
+그런데 만약 p1~3 객체들 중 하나라도, rejected 상태가 되면,
+// 1번 직원 정보
+const p1 = fetch('https://learn.codeit.kr/api/members/1').then((res) => res.json());
+// 2번 직원 정보
+const p2 = fetch('https://learn.codeit.kr/api/members/2').then((res) => res.json());
+// 3번 직원 정보
+const p3 = fetch('https://learnnnnnn.codeit.kr/api/members/3').then((res) => res.json()); // 잘못된 URL
+
+Promise
+  .all([p1, p2, p3])
+  .then((results) => {
+    console.log(results); // Array : [1번 직원 정보, 2번 직원 정보, 3번 직원 정보]
+  });
+  
+all 메소드가 리턴한 Promise 객체는 p3 객체처럼 rejected 상태가 되고 동일한 작업 실패 정보를 갖게됨.
+* Promise 객체가 하나라도 rejected 상태가 되는 경우에 대비하려면, 
+
+// 1번 직원 정보
+const p1 = fetch('https://learn.codeit.kr/api/members/1').then((res) => res.json());
+// 2번 직원 정보
+const p2 = fetch('https://learn.codeit.kr/api/members/2').then((res) => res.json());
+// 3번 직원 정보
+const p3 = fetch('https://learnnnnnn.codeit.kr/api/members/3').then((res) => res.json());
+
+Promise
+  .all([p1, p2, p3])
+  .then((results) => {
+    console.log(results); // Array : [1번 직원 정보, 2번 직원 정보, 3번 직원 정보]
+  })
+  .catch((error) => {  //catch 메소드를 붙여주면 된다.
+    console.log(error);
+  });
+
+
+
+2. race 메소드
+race 메소드가 리턴한 Promise 객체는 아규먼트로 들어온 배열의 여러 Promise 객체들 중에서 
+가장 먼저 fulfilled 상태 또는 rejected 상태가 된 Promise 객체와 동일한 상태와 결과를 갖게 된다.
+
+const p1 = new Promise((resolve, reject) => {
+  setTimeout(() => resolve('Success'), 1000);
+});
+const p2 = new Promise((resolve, reject) => {
+  setTimeout(() => reject(new Error('fail')), 2000);
+});
+const p3 = new Promise((resolve, reject) => {
+  setTimeout(() => reject(new Error('fail2')), 4000);
+});
+
+Promise
+  .race([p1, p2, p3])
+  .then((result) => {
+    console.log(result); // hello 출력
+  })
+  .catch((value) => {
+    console.log(value);
+  });
+
+ /* p1 객체는 1초 후에 fulfilled 상태가 되고, 그 작업 성공 결과로 문자열 Success를 가지게 되는데, 
+ p2는 2초 후에, p3는 4초 후에 rejected 상태가 된다. 
+ 말그대로 race 메소드는 여러 Promise 객체들을 레이스(race, 경쟁)시켜서 가장 빨리 상태가 결정된 Promise 객체를 선택하는 메소드 */
+
+
+
+3. allSettled 메소드 :  배열 내의 모든 Promise 객체가 fulfilled 또는 rejected 상태가 되기까지 기다리고, pending 상태의 Promise 객체가 하나도 없게 되면, A의 상태값은 fulfilled 상태가 되고 그 작업 성공 결과로, 하나의 배열을 갖게 됨.
+[
+  {status: "fulfilled", value: 1},
+  {status: "fulfilled", value: 2},
+  {status: "fulfilled", value: 3},
+  {status: "rejected",  reason: Error: an error}
+]
+(1) 최종 상태를 status 프로퍼티, 
+(2) 그 작업 성공 결과는 value 프로퍼티, 
+(3) 그 작업 실패 정보는 reason 프로퍼티
+
+fulfilled 상태와 rejected 상태를 묶어서 settled 상태라고 하는데, allSettled 메소드는 말 그대로 배열 속 Promise 객체들이 settled 상태가 되기만 하면 되는 것. 이에 반해 all 메소드는 모든 Promise 객체들이 fulfilled 상태가 되기를 기다리는 것.
+
+
+
+4. any 메소드 : 여러 Promise 객체들 중에서 가장 먼저 fulfilled 상태가 된 Promise 객체의 상태와 결과가 A에도 똑같이 반영. 만약 모든 Promise 객체가 rejected 상태가 되어버리면 AggregateError라고 하는 에러를 작업 실패 정보로 갖고 rejected 상태가 됨.
+any라는 단어의 뜻처럼 배열 속의 Promise 객체 중 단 하나라도 fulfilled 상태가 되면 되는 것.
+
+
+
+@@@@@ axios 객체 @@@@@  fetch 함수 말고도 Ajax 통신을 할 수 있는 방법.
+axios 객체에서 리퀘스트를 보내는 많은 메소드들이 fetch 함수처럼 Promise 객체를 리턴
+
+axios 
+ .get('https://jsonplaceholder.typicode.com/users')
+ .then((response) => {
+   console.log(response);
+ })
+ .catch((error) => {
+   console.log(error);
+ });
+
+* axios 객체에는 fetch 함수에는 없는 다음과 같은 몇 가지 기능 및 장점
+1) 모든 리퀘스트, 리스폰스에 대한 공통 설정 및 공통된 전처리 함수 삽입 가능
+2) serialization, deserialization을 자동으로 수행
+3) 특정 리퀘스트에 대해 얼마나 오랫동안 리스폰스가 오지 않으면 리퀘스트를 취소할지 설정 가능(request timeout)
+4) 업로드 시 진행 상태 정보를 얻을 수 있음
+5) 리퀘스트 취소 기능 지원
+등등
+
+* axios 의 단점은 별도의 다운로드가 필요한 패키지라는 점
+axios에서 제공하는 추가 기능이 필요한 경우에는 axios를 쓰고, 
+그런 기능이 필요하지 않고 별도의 패키지 다운로드를 원하지 않는 경우에는 fetch 함수를 사용한다.
+
+
+
+
+@@@@@ async / await @@@@@ 2021년 기준으로 promise 객체를 좀 더 간단하고 보기좋게 다룰 수 있는 문법.
+
+//
+fetch('https://jsonplaceholder.typicode.com/users')
+.then((response) => response.text())
+.then((result) => {console.log(result); }); // fetch 문법
+//
+
+async function fetchAndPrint() {
+  const response = await fetch('https://jsonplaceholder.typicode.com/users');
+  const result = await response.text();
+  console.log(result); 
+}
+
+fetchAndPrint();
+// async 문법
+------------------------------------------------------------
+
+
+**** 실행 순서 ****
+async function fetchAndPrint() {
+  console.log(2);
+  const response = await fetch('https://jsonplaceholder.typicode.com/users'); // await 를 만나면 바깥 코드를 먼저 실행 후 돌아옴.
+  console.log(7);
+  const result = await response.text(); // 바깥 코드에는 이미 실행 된 코드들만 있어서 await response.text();가 fulfilled 될때까지 기다렸다가 result에 할당 되고 끝.
+  console.log(result);
+}
+
+console.log(1);
+fetchAndPrint();
+console.log(3);
+console.log(4);
+console.log(5);
+console.log(6);
+
+===> console 탭 출력
+1
+2
+3
+4
+5
+6
+7
+[리스폰스의 내용 (result) ]
+
+*async 함수 안의 코드가 실행되다가 await을 만나면, 일단 await 뒤의 코드가 실행되고, 코드의 실행 흐름이 async 함수 바깥으로 나가서 나머지 코드를 다 실행합니다.
+물론 함수 바깥에 더 이상 실행할 코드가 없을 수도 있습니다. 
+어느 경우든 그 이후로는, await 뒤에 있던 Promise 객체가 fulfilled 상태가 되기를 기다립니다. 그리고 기다리던 Promise 객체가 fulfilled 상태가 되면 await이 Promise 객체의 작업 성공 결과를 리턴
+------------------------------------------------------------
+
+
+* 위의 async 문법을 Promise Chaining을 하는 코드로 바꿨을때.
+function fetchAndPrint() {
+  console.log(2);
+  fetch('https://jsonplaceholder.typicode.com/users')
+    .then((response) => {
+      console.log(7);
+      return response.text();
+    })
+    .then((result) => { console.log(result); });
+}
+
+console.log(1);
+fetchAndPrint();
+console.log(3);
+console.log(4);
+console.log(5);
+console.log(6);
+------------------------------------------------------------
+
+* async/await 구문 자체가 기존의 Promise 객체를 사용하는 코드(Promise Chaining)를
+(1) 개발자가 더 편하게 작성할 수 있도록 하고
+(2) 코드의 가독성을 높이기 위해서 사용.
+
+* 코드에서 async/await이 보인다면 사실 비동기 실행되는 코드가 있다는 걸 반드시 기억
+
+------------------------------------------------------------
+*fetch 문법을 async 로 적용하여 변경 
+
+[fetch]
+fetch("https://jsonplaceholder.typicode.com/users")
+  .then((response) => response.json())
+  .then((users) => {
+    const lastUser = users[users.length - 1];
+    return lastUser.id;
+  })
+  .then((id) => fetch(`https://jsonplaceholder.typicode.com/posts?userId=${id}`))
+  .then((response) => response.json())
+  .then((posts) => {
+    const lastPost = posts[posts.length - 1];
+    console.log(lastPost);
+  });
+
+[async]
+async function getTheLastPostOfTheLastUser() {
+  const usersJSON = await fetch("https://jsonplaceholder.typicode.com/users");
+  const users = await usersJSON.json();
+  const lastUser = users[users.length - 1];
+  const { id } = lastUser;
+  const postsJSON = await fetch(`https://jsonplaceholder.typicode.com/posts?userId=${id}`);
+  const posts = await postsJSON.json();
+  const lastPost = posts[posts.length - 1];
+  return lastPost;
+}
+
+getTheLastPostOfTheLastUser().then((lastPost) => {
+  console.log(lastPost);
+});
+
+------------------------------------------------------------
+
+@@@@@ async 함수의 catch문과 finally문 @@@@@ 
+
+async function showQuiz() {
+  try {  // try 로 catch 전 await을 감싸 줌.
+    const response = await fetch('https://learn.codeit.kr/api/quiz');
+    const test = await response.json();
+    const yourAnswer = prompt(test.quiz);
+    if (yourAnswer.toLowerCase() === test.answer) {
+      alert(`Good Job, ${test.explanation} => Let\'s learn more with Codeit!`);
+    } else {
+      throw new Error('wrong');
+    }
+  } catch (error) { //error를 catch 로 감싸 줌.
+    if (error.message === 'wrong') {
+      alert('You need to learn JavaScript with Codeit!');
+    } else {
+      alert('Error');
+    }
+  } finally { // fulfilled 나 rejected 상관없이 출력 할때 마지막에 넣어줌.
+    window.open('https://codeit.kr', '_blank');
+  }
+}
+
+showQuiz();
+
+
+
+*** async 함수가 리턴하는 Promise 객체 ***
+(1) Promise 객체를 리턴하는 경우
+async 함수 안에서 Promise 객체를 리턴하는 경우에는 해당 Promise 객체와 동일한 상태와 작업 성공 결과(또는 작업 실패 정보)를 가진 Promise 객체를 리턴(그냥 해당 Promise 객체를 리턴한다고 봐도 괜찮)
+(이미 fulfilled 상태인 Promise 객체나 이미 rejected 상태인 Promise 객체를 리턴하는 경우 전부 다 해당)
+
+(2) Promise 객체 이외의 값을 리턴하는 경우
+async 함수 내부에서 Promise 객체 이외에 숫자나 문자열, 일반 객체 등을 리턴하는 경우에는, fulfilled 상태이면서, 리턴된 값을 작업 성공 결과로 가진 Promise 객체를 리턴
+
+(3) 아무 값도 리턴하지 않는 경우
+fulfilled 상태이면서, undefined를 작업 성공 결과로 가진 Promise 객체가 리턴 (return 없이 내부에 console만 있는 경우)
+
+(4) async 함수 내부에서 에러가 발생했을 때
+async 함수 안에서 에러가 발생하면, rejected 상태이면서, 해당 에러 객체를 작업 실패 정보로 가진 Promise 객체가 리턴
+
+*** async 함수가 결국 Promise 객체를 리턴한다는 사실은 아주 중요. 이 말은 곧 async 함수 안에서 다른 async 함수를 가져다가 쓸 수 있다는 뜻이기 때문
+
+
+@@@@@ 함수 표현 & async를 붙이는 위치 @@@@@
+
+1. Function Declaration (함수 선언식)
+// 1) Function Declaration
+async function example1(a, b){
+  return a + blur;
+}
+
+2. Function Expression (함수 표현식)
+2-1 함수에 이름이 붙어있는 Named Function Expression
+// 2-1) Function Expression(Named)
+const example2_1 = async function addEventListener(a, b) {
+  return a +b ;
+};
+
+2-2 함수에 이름이 없는 Anonymouse Function Expression
+const example2_2 = async function(a, b) {
+  return a + b;
+};
+
+3. Arrow Function (화살표 함수)
+// 3-1) Arrow Function
+const example3_1 = async (a, b) => {
+  return a + b;
+};
+
+// 3-1) Arrow Function
+const example3_2 = async (a, b) => a + b;
+
+
+
+**** 즉시실행함수(Immediately-invoked function expression, IIFE) ***
+
+1.
+(function print(sentence) {
+  console.log(sentence);
+  return sentence;
+}('I love JavaScriot!'));    // function 바깥에 소괄호 한번 더 감싸주기
+
+//async 문
+(async function print(sentence) {
+  console.log(sentence);
+  return sentence;
+}('I love JavaScript!'));
+
+
+
+2.
+(function (a, b) {
+  return a + b;
+}(1, 2));  // function 바깥에 소괄호 한번 더 감싸주기
+
+//async 문
+(async function (a, b) {
+  return a + b;
+}(1, 2));
+
+
+
+3.
+((a, b) => {
+  return a + b
+})(1, 2);  // function 자리였던 부분 소괄호 한번 더 감싸주기
+
+//async 문
+(async (a, b) => {
+  return a + b; 
+})(1, 2);
+
+
+
+4.
+((a, b) => a + b)(1, 2); // function 자리였던 부분 소괄호 한번 더 감싸주기
+
+//async 문
+(async (a, b) => a + b)(1, 2);
