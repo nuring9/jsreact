@@ -142,7 +142,7 @@ fetch('https://learn.codeit.kr/api/topics')
   .then((result) => {
     const topics = JSON.parse(result); // JSON이라는 객체의 parse 메소드를 사용하여 변환 Deserialization, 우리말로는 역직렬화
     const beginnerLevelTopics = topics.filter((topic) => topic.difficulty === '초급'); //topics 배열의 filter 메소드를 사용해서 각 요소의 difficulty 프로퍼티(토픽의 난이도) 값이 '초급'에 해당하는 것들만 추출해서 만든 새로운 배열을 리턴
-    console.log(beginnerLevelTopics); //초급 토픽들로 이루어진 배열을 출력하
+    console.log(beginnerLevelTopics); //초급 토픽들로 이루어진 배열을 출력
   });
 
 
@@ -1359,3 +1359,54 @@ const example3_2 = async (a, b) => a + b;
 
 //async 문
 (async (a, b) => a + b)(1, 2);
+
+
+
+@@@@@  async 함수를 작성할 때 주의해야할 성능 문제 @@@@@
+
+async function getResponses(urls) {
+  for(const url of urls){
+    const response = await fetch(url);
+    console.log(awailt response.text());
+  }
+}
+
+getResponses 함수는 urls라는 파라미터로, 여러 개의 URL들이 있는 배열을 받아서, 순서대로 각 URL에 리퀘스트를 보내고, 그 리스폰스의 내용을 출력하는 함수
+이전 URL에 리퀘스트를 보내고 리스폰스를 받아서 출력하고 나서야, 다음 URL에 대한 리퀘스트를 보낼 수 있다는 단점
+순차적인 작업 처리를 한다는 점 (이전 URL에 대해서 await 문이 붙은 Promise 객체가 fulfilled 상태가 될 때까지는 그 다음 URL에 대한 작업들이 시작될 수 없기 때문)
+
+
+async function fetchUrkls(urls) {
+  for(const url of urls) {
+    (async () => { // 추가된 부분
+      cosnt response = await fetch(url);
+      console.log(await response.text());
+    })(); // 추가된 부분
+  }
+}
+
+리스폰스의 내용의 순서가 중요하지 않은 경우, 각 url에 리퀘스트를 보내고 리스폰스를 받는 코드를, 별도의 즉시실행되는 async 함수로 감싸줘서 IIFE로 변환
+리퀘스트를 보내는 것을 순서대로 바로 실행. 이전 코드처럼 이전 URL에 대한 리스폰스가 오기까지를 기다렸다가 다음 URL에 리퀘스트를 보내는 게 아니라
+* 리스폰스의 순서를 보장하지 않아도 되는 경우에는 이 코드가 훨씬 성능이 좋음.
+
+
+**동기 실행되는 콜백** (자바스크립트 배열의 메소드 중에서 filter라는 메소드 사용)
+const arr = [1, 2, 3, 4, 5, 6];
+
+const newArr = arr.filter(function is0dd(num) { //isOdd(홀수인가요?)라는 함수
+  return (num % 2 === 1);
+}); //filter 함수는 arr 배열에서 각 요소를 하나씩 순회하면서 매 요소마다 isOdd 함수를 실행
+
+console.log(newArr); // [1, 3, 5]
+
+
+**Arrow Function 형식**
+const arr = [1, 2, 3, 4, 5, 6];
+const newArr = arr.filter((num) => num % 2);
+console.log(newArr); // [1, 3, 5]
+
+= filter 메소드 안의 콜백은 앞서 말했듯이 '동기 실행되는 콜백' (아주 정직하게 순서대로 실행)
+
+콜백이란 함수의 파라미터로 전달되는 함수를 의미하는 넓은 의미의 개념
+1. 동기 실행되는지
+2. 비동기 실행되는지  에 따라 두 종류로 나뉨.
